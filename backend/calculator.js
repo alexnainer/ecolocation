@@ -1,24 +1,22 @@
-
+const { Location } = require("./database/schemas");
+const { User } = require("./database/schemas");
 const api = require("./api");
 
-//These get populated from the city database
-var location = {name:"City Hall", xLoc:"230", yLoc:"100", cost: 0}
-const parkLocations = [park1, park2, park3];
-const schoolLocations = [school1, school2, school3];
-const libraryLocations = [library1, library2, library3];
-
-const storeMeetingLocation = (x, y, array) => {
-    array.push({x: x, y: y});
-}
-
-const createPosibleLocationArray = (outdoorsTrue, government, public, cafe, ) => {
+const createPosibleLocationArray = (outdoorsTrue, governmentTrue, publicTrue, cafeTrue, restaurantTrue, hotelTrue) => {
     var posibleLocations = [];
-
-    if (parksTrue) {posibleLocations = posibleLocations.concat(parkLocations);}
-    if (schoolsTrue) {posibleLocations = posibleLocations.concat(schoolLocations);}
-    if (libraryTrue) {posibleLocations = posibleLocations.concat(libraryLocations);}  
+    
+    if (outdoorsTrue) {posibleLocations = posibleLocations.concat( getLocationByType("Outdoors"));}
+    if (governmentTrue) {posibleLocations = posibleLocations.concat( getLocationByType("Government Building"));}
+    if (publicTrue) {posibleLocations = posibleLocations.concat( getLocationByType("Public Building"));}
+    if (cafeTrue) {posibleLocations = posibleLocations.concat( getLocationByType("Cafe"));}
+    if (restaurantTrue) {posibleLocations = posibleLocations.concat( getLocationByType("Restaurant"));}
+    if (hotelTrue) {posibleLocations = posibleLocations.concat( getLocationByType("Hotel"));}  
 
     return posibleLocations;
+}
+
+const getLocationByType = async (type) => {
+    return await Location.find({locationType: type})
 }
 
 const calculateDistance = (user, loc, tansportType) => {
@@ -34,14 +32,13 @@ const calculateDistance = (user, loc, tansportType) => {
     return result.routes[0].distance;
 }
 
-
 //needs locSelec and users from front end
-const locSelec = [{name: "outdoors", selec: true},
-                  {name: "government", selec: false},
-                  {name: "public", selec: true,
-                  {name: "cafe", selec: false},
-                  {name: "restaurant", selec: false},
-                  {name: "hotel", selec: false},]
+const locSelec = [{name: "Outdoors", selec: true},
+                  {name: "Government", selec: false},
+                  {name: "Public", selec: true,
+                  {name: "Cafe", selec: false},
+                  {name: "Restaurant", selec: false},
+                  {name: "Hotel", selec: false},]
 const users = [{name:"Mike", xLoc:"200", yLoc:"200", walkDist: 1000, bikeDist: 5000, driveDist: 20000, CO2PerKm: 522},
                {name:"Alex", xLoc:"300", yLoc:"10", walkDist: 1000, bikeDist: 5000, driveDist: 20000, CO2PerKm: 140},
                {name:"Aleks", xLoc:"250", yLoc:"100", walkDist: 1000, bikeDist: 5000, driveDist: 20000, CO2PerKm: 304},
@@ -78,5 +75,9 @@ const driver = (locSelec, users) => {
 
     //search location objects for lowest cost
     return posibleLocations[lowestCost];
+}
+
+const storeMeetingLocation = (x, y, array) => {
+    array.push({x: x, y: y});
 }
 
