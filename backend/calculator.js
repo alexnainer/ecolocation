@@ -1,6 +1,20 @@
 const { Location } = require("./database/schemas");
 const { User } = require("./database/schemas");
+const { Session } = require("./database/schemas");
 const api = require("./api");
+
+const getSession = async () => {
+    return await User.find({})
+}
+
+const getUserList = async () => {
+    return await User.find({})
+}
+
+const getLocationByType = async (type) => {
+    return await Location.find({locationType: type})
+}
+
 
 const createPosibleLocationArray = (outdoorsTrue, governmentTrue, publicTrue, cafeTrue, restaurantTrue, hotelTrue) => {
     var posibleLocations = [];
@@ -15,16 +29,30 @@ const createPosibleLocationArray = (outdoorsTrue, governmentTrue, publicTrue, ca
     return posibleLocations;
 }
 
-const getLocationByType = async (type) => {
-    return await Location.find({locationType: type})
+
+function formatCoordinates(coordinates) {
+    let resultStrings = [];
+    coordinates.forEach((coordSet) => {
+        coordString = coordSet[0].toString() + "%2C" + coordSet[1].toString();
+        resultStrings.push(coordString);
+    });
+    let resultString = ""
+    if (resultStrings[0]) {
+        resultString += resultStrings[0];
+        for (i=1; i<resultStrings.length; i++) {
+            resultString += "%3B" + resultStrings[i];
+        }
+    }
+    return resultString.trim();
+
 }
 
 const calculateDistance = (user, loc, tansportType) => {
-    //distance = api call to mapbox
-    //return distance
+    
+    helperString = formatCoordinates([user, loc])
     options = {
         routing: tansportType,
-        coordinates: [[user, user], [loc, loc]] //[origin, end]
+        coordinates: helperString
     }
 
     result = api.getMapBoxDirections(options);
@@ -45,18 +73,19 @@ const users = [{name:"Mike", xLoc:"200", yLoc:"200", walkDist: 1000, bikeDist: 5
                {name:"Ryan", xLoc:"100", yLoc:"100", walkDist: 1000, bikeDist: 5000, driveDist: 20000, CO2PerKm: 293},]
 //needs locSelec and users from front end
 
-const driver = (locSelec, users) => {
+const driver = (locSelec, users, id) => {
     // carbon cost array initalize
-    posibleLocations = createPosibleLocationArray(locSelec[0].selec, locSelec[1].selec, locSelec[2].selec, locSelec[3].selec, locSelec[4].selec, locSelec[5].selec)
+    locations = createPosibleLocationArray(locSelec[0].selec, locSelec[1].selec, locSelec[2].selec, locSelec[3].selec, locSelec[4].selec, locSelec[5].selec)
+    users = getUserList({});
 
     // loop through locations and users
-    for (l = 0; l < posibleLocations.length; l++) {
+    for (l = 0; l < locations.length; l++) {
         var cost = 0;
         for (u = 0; u < users.length; u++) {
 
-            distanceWalk = calculateDistance(users[u], posibleLocations[l], "walking")
-            distanceWalk = calculateDistance(users[u], posibleLocations[l], "cycling")
-            distanceWalk = calculateDistance(users[u], posibleLocations[l], "driving")
+            distanceWalk = calculateDistance(users[u].geoJson.coordinates, locations[l].geoJson.coordinates, "walking")
+            distanceWalk = calculateDistance(users[u].geoJson.coordinates, locations[l].geoJson.coordinates, "cycling")
+            distanceWalk = calculateDistance(users[u].geoJson.coordinates, locations[l].geoJson.coordinates, "driving")
 
             if (distanceWalk <= users[u].walkDist) {
                 //user will walk no C02 Cost
