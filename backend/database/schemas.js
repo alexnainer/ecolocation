@@ -45,7 +45,14 @@ const sessionSchema = new Schema(
   {
     id: String,
     users: [userSchema],
-    locationPreferences: [String],
+    locationPreferences: {
+      cafe: Boolean,
+      outdoors: Boolean,
+      government: Boolean,
+      restaurant: Boolean,
+      hotel: Boolean,
+      public: Boolean,
+    },
     results: {
       cost: Number,
     },
