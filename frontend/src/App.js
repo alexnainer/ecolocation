@@ -1,15 +1,24 @@
 import "./App.css";
 import MapPage from "./pages/map/MapPage";
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams,
+} from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <MapPage />
-      <Sidebar />
-    </div>
+    <Router>
+      <div className="App">
+        <Route path="/:sessionId?">
+          <MapPage />
+        </Route>
+      </div>
+    </Router>
     // <div className="App">
     //   <header className="App-header">
     //     <img src={logo} className="App-logo" alt="logo" />

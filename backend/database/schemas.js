@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const locationSchema = new Schema(
@@ -55,4 +55,4 @@ const Location = mongoose.model("Location", locationSchema);
 const User = mongoose.model("User", userSchema);
 const Session = mongoose.model("Session", sessionSchema);
 
-export { Location, User, Session };
+module.exports = { Location, User, Session };
