@@ -19,7 +19,7 @@ class MapContainer extends Component {
     map = new mapboxgl.Map({
       center: [-79.3832, 43.6532],
       zoom: 7,
-      maxZoom: 11,
+      maxZoom: 18,
       minZoom: 4,
       container: "map",
       style: "mapbox://styles/mapbox/streets-v11",
