@@ -6,7 +6,7 @@ class Sidebar extends Component {
   render() {
     return (
       <div className="sidebar-container">
-          <div className="meeting-header">
+            <div className="meeting-header">
                 <h1 className="meeting-text">-- In your meeting --</h1>
             </div>
             <div className="list-container">
@@ -46,9 +46,28 @@ class Sidebar extends Component {
                     </Card.Header>
             </div>
             <div className="addPerson">
-            <Card.Header className="people-list addCard">
+                <Card.Header className="addCard">
                     <p className="addToList">+ Click Here To Add a Person +</p>
                 </Card.Header>
+            </div>
+
+                        {/* USER PREFERENCES */}
+            <div className="userPreferencesHeader">
+                    <p className="preferenceText">Your Preferences</p>
+            </div>
+            <div className="userUnderline"></div>
+            <div className="userPreferences">
+                <p className="preferenceTextHeaders">Location</p>
+            </div>
+
+                        {/* LOCATION PREFERENCES */}
+            <div className="locationPreferencesHeader">
+                    <p className="preferenceText">Location Preferences</p>
+            </div>
+            <div className="locationUnderline">
+
+            </div>
+            <div className="locationPreferences">
             </div>
       </div>
     );
