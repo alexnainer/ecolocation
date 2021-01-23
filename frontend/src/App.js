@@ -1,12 +1,13 @@
 import "./App.css";
 // import MapPage from "./pages/map/MapPage";
-// import Header from "./components/Header";
+import Header from "./components/Header";
+
 
 function App() {
   return (
     <div className="App">
-      {/* <Header />
-      <MapPage /> */}
+       <Header />
+      {/*<MapPage /> */}
     </div>
     // <div className="App">
     //   <header className="App-header">

@@ -1,4 +1,39 @@
 .header {
-  border-bottom: 2px solid #424242;
   color: #424242;
+}
+
+.header-container {
+background-color: #01AF5C;
+}
+
+.headerUpperline {
+  min-height: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #00DC72;
+}
+
+.headerUnderline {
+  min-height: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: #1A995C;
+}
+
+
+@keyframes gradient {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
 }
