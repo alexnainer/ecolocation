@@ -6,7 +6,9 @@ const api = require("./api");
 router.get("/example", async (req, res) => {
   const { query } = req;
   
-  res.send({});
+  const result = dataParser.calculate();
+
+  res.send(result);
 });
 
 
