@@ -52,7 +52,7 @@ const mongoPort = process.env.MONGO_PORT;
           type: "Point",
           coordinates: result.fields.geojson.coordinates,
         },
-        locationType: locationGeneral(result.name),
+        locationType: locationGeneral(location),
         address: result.fields.address,
         description: result.fields.description,
       };
