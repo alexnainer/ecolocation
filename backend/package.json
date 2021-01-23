@@ -10,7 +10,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.11.13",
-    "supports-color": "^8.1.0"
+    "supports-color": "^8.1.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {},
   "scripts": {
