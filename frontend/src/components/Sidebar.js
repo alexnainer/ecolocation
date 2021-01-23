@@ -50,6 +50,25 @@ class Sidebar extends Component {
                     <p className="addToList">+ Click Here To Add a Person +</p>
                 </Card.Header>
             </div>
+
+                        {/* USER PREFERENCES */}
+            <div className="userPreferencesHeader">
+                    <p className="preferenceText">Your Preferences</p>
+            </div>
+            <div className="userUnderline"></div>
+            <div className="userPreferences">
+                <p className="preferenceTextHeaders">Location</p>
+            </div>
+
+                        {/* LOCATION PREFERENCES */}
+            <div className="locationPreferencesHeader">
+                    <p className="preferenceText">Location Preferences</p>
+            </div>
+            <div className="locationUnderline">
+
+            </div>
+            <div className="locationPreferences">
+            </div>
       </div>
     );
   }
