@@ -36,7 +36,7 @@ const calculateDistance = (origin, end) => {
 
 
 //we need to get state of checkboxes from the frontend (parksTrue, schoolsTrue, libraryTrue)
-const driver = (peopleOptions, endPointOptions, parksTrue, schoolsTrue, libraryTrue) => {
+const driver = (peopleOptions, parksTrue, schoolsTrue, libraryTrue) => {
     // carbon cost array initalize
     posibleLocations = createPosibleLocationArray(parksTrue, schoolsTrue, libraryTrue)
 
