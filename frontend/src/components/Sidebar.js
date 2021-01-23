@@ -10,16 +10,43 @@ class Sidebar extends Component {
                 <h1 className="meeting-text">-- In your meeting --</h1>
             </div>
             <div className="list-container">
-                <Card.Header className="people-list oddCard" >
-                    <p className="personTab">Person 1</p>
-                </Card.Header>
-                <Card.Header className="people-list evenCard" >
-                    <p className="personTab">Person 2</p>
-                </Card.Header>
-                <Card.Header className="people-list oddCard" >
-                    <p className="personTab">Person 3</p>
-                </Card.Header>
-                <Card.Header className="people-list addCard">
+                    <Card.Header className="people-list oddCard" >
+                        <p className="personTab">Person 1</p>
+                    </Card.Header>
+                    <Card.Header className="people-list evenCard" >
+                        <p className="personTab">Person 2</p>
+                    </Card.Header>
+                    <Card.Header className="people-list oddCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+                    <Card.Header className="people-list evenCard" >
+                        <p className="personTab">Person 4</p>
+                    </Card.Header>
+                    <Card.Header className="people-list oddCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+                    <Card.Header className="people-list evenCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+                    <Card.Header className="people-list oddCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+
+                    <Card.Header className="people-list evenCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+                    <Card.Header className="people-list oddCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+                    <Card.Header className="people-list evenCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+                    <Card.Header className="people-list oddCard" >
+                        <p className="personTab">Person 3</p>
+                    </Card.Header>
+            </div>
+            <div className="addPerson">
+            <Card.Header className="people-list addCard">
                     <p className="addToList">+ Click Here To Add a Person +</p>
                 </Card.Header>
             </div>
