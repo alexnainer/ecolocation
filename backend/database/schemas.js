@@ -3,16 +3,18 @@ const { Schema } = mongoose;
 
 const locationSchema = new Schema(
   {
-    name: String,
+    name: { $type: String },
     geoJson: {
-      type: String,
-      coordinates: [Number],
+      $type: {
+        type: { $type: String },
+        coordinates: { $type: [Number] },
+      },
     },
-    type: String,
-    address: String,
-    description: String,
+    locationType: { $type: String },
+    address: { $type: String },
+    description: { $type: String },
   },
-  { collection: "locations" }
+  { collection: "locations", typeKey: "$type" }
 );
 
 const userSchema = new Schema(
