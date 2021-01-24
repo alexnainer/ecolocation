@@ -1,21 +1,38 @@
-const { User } = require("./database/schemas");
+const { User, Session } = require("./database/schemas");
 
 const log = require("debug")("sessions");
 const logError = require("debug")("sessions:error");
 
 const options = { upsert: true, new: true };
 
-const createUser = async ({ name }) => {
+const createUser = async ({ name, sessionId }) => {
   try {
-    return await User.findOneAndUpdate({}, { name }, options);
+    console.log("name", name);
+    const user = await User.create({
+      name,
+      geoJson: {},
+      preferences: {
+        carType: "",
+        carpool: false,
+        maxWalkDistance: 0,
+        maxCarDistance: 0,
+        maxBicycleDistance: 0,
+      },
+    });
+    console.log("user", user);
+    await Session.findOneAndUpdate(
+      { id: sessionId },
+      { $push: { users: user._id } },
+      options
+    );
   } catch (e) {
     logError(e);
   }
 };
 
-const updateUser = async ({ id, update }) => {
+const updateUser = async (user) => {
   try {
-    return await User.findOneAndUpdate({ _id: id }, update, options);
+    return await User.findOneAndUpdate({ _id: user._id }, user, options);
   } catch (e) {
     logError(e);
   }
@@ -23,4 +40,5 @@ const updateUser = async ({ id, update }) => {
 
 module.exports = {
   createUser,
+  updateUser,
 };

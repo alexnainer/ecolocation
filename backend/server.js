@@ -1,5 +1,5 @@
 const express = require("express");
-// const debug = require("debug");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const app = express();
@@ -17,6 +17,9 @@ const cors = require("cors");
     app.options("*", cors());
 
     const router = require("./routes");
+
+    app.use(bodyParser.json()); // support json encoded bodies
+    app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
     app.use("/api/v1.0", router);
 
     const mongoUser = process.env.MONGO_USER;

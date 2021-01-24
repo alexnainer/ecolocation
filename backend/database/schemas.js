@@ -38,13 +38,13 @@ const userSchema = new Schema(
       routes: [{}],
     },
   },
-  { collection: "users" }
+  { collection: "users", typeKey: "$type" }
 );
 
 const sessionSchema = new Schema(
   {
     id: String,
-    users: [userSchema],
+    users: { $type: [Schema.Types.ObjectId], ref: "User" },
     locationPreferences: {
       cafe: Boolean,
       outdoors: Boolean,
@@ -61,7 +61,7 @@ const sessionSchema = new Schema(
       },
     },
   },
-  { collection: "sessions" }
+  { collection: "sessions", typeKey: "$type" }
 );
 
 const Location = mongoose.model("Location", locationSchema);
