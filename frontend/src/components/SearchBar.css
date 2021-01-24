@@ -1,4 +1,6 @@
 .searchbar {
   display: flex;
   justify-content: center;
+  margin-top: -10px;
+  color: #576A84;
 }

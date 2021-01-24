@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
 import api from "../../api/api";
 import { withRouter } from "react-router";
+import Calculate from "../../components/Calculate"
 
 class MapPage extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class MapPage extends Component {
           addPerson={(name) => this.handleAddPerson(name)}
           updatePerson={(user) => this.handleUpdatePerson(user)}
         />
+        <Calculate />
       </div>
     );
   }
