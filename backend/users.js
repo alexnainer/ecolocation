@@ -15,7 +15,7 @@ const createUser = async ({ name }) => {
 
 const updateUser = async ({ id, update }) => {
   try {
-    return await User.findOneAndUpdate({ _id: id }, { update }, options);
+    return await User.findOneAndUpdate({ _id: id }, update, options);
   } catch (e) {
     logError(e);
   }
