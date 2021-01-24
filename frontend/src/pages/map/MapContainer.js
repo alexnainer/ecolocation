@@ -110,16 +110,15 @@ class MapContainer extends Component {
 
       if (i >= numberOfSources) {
         if (users[i].results.transportationType) {
-          places["features"].push(
-            createPlace(descr[i], icon[i], startingCoords[i])
-          );
-
           let colour = randomColourArray[i];
           createLines(
             map,
             "route" + i.toString(),
             geojson.geometry.coordinates,
             colour
+          );
+          places["features"].push(
+            createPlace(descr[i], icon[i], startingCoords[i])
           );
           createCircle(
             map,
@@ -139,6 +138,9 @@ class MapContainer extends Component {
           },
         });
 
+        places["features"].push(
+          createPlace(descr[i], icon[i], startingCoords[i])
+        );
         map.getSource(`circles-point-origin${i}`).setData({
           type: "FeatureCollection",
           features: [
@@ -154,8 +156,14 @@ class MapContainer extends Component {
         });
       }
     }
+    console.log("session", session);
+    console.log("session.results", session.results);
     places["features"].push(
-      createPlace("Starbucks", "star", session.results.geoJson.coordinates)
+      createPlace(
+        session.results.endpoint,
+        determineIconEndPoint(session.results.endpointType),
+        session.results.geoJson.coordinates
+      )
     );
     map.getSource("places").setData(places);
   }
@@ -261,7 +269,11 @@ class MapContainer extends Component {
 
       if (users.length > 0) {
         places["features"].push(
-          createPlace("Starbucks", "star", session.results.geoJson.coordinates)
+          createPlace(
+            session.results.endpoint,
+            determineIconEndPoint(session.results.endpointType),
+            session.results.geoJson.coordinates
+          )
         );
       }
       console.log(places);
@@ -302,8 +314,21 @@ function determineIconOrigin(transportType) {
   }
 }
 
-function determineIconEndPoint(endPointType) {
-  return "star";
+function determineIconEndPoint(ept) {
+  switch (ept) {
+    case "Outdoors":
+      return "garden";
+    case "Cafe":
+      return "cafe";
+    case "Government Building":
+      return "town-hall";
+    case "Public Building":
+      return "college";
+    case "hotel":
+      return "suitcase";
+    case "Restaurant":
+      return "restaurant";
+  }
 }
 
 function createCircle(map, id, coordinates, colour, radius) {

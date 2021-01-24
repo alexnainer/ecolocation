@@ -209,15 +209,11 @@ const driver = async (id) => {
   );
   await Session.findOneAndUpdate(
     { id: id },
-    { "results.endpoint": bestLocationName }
-  );
-  await Session.findOneAndUpdate(
-    { id: id },
-    { "results.endpointType": bestLocationType }
-  );
-  await Session.findOneAndUpdate(
-    { id: id },
-    { "results.geoJson": locations[bestLocIndex].geoJson }
+    {
+      "results.endpoint": bestLocationName,
+      "results.endpointType": bestLocationType,
+      "results.geoJson": locations[bestLocIndex].geoJson,
+    }
   );
 };
 
