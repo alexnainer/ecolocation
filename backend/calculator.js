@@ -1,5 +1,4 @@
-const { Location } = require("./database/schemas");
-const { Session } = require("./database/schemas");
+const { Location, Session, User } = require("./database/schemas");
 const api = require("./api");
 
 const getSession = async (id) => {
@@ -99,6 +98,11 @@ const driver = (id) => {
             }
             //user[u].results.transportationType
         }
+    }
+
+    
+    for (let i = 0; i < session.users; i++) {
+        await User.findOneAndUpdate({ _id: session.users[i]._id }, { "results.transportationType": userTransType[i] });
     }
 
     //search location objects for lowest cost
