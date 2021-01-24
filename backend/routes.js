@@ -21,6 +21,17 @@ router.get("/session/:sessionId", async (req, res) => {
   res.send(result);
 });
 
+router.post("/session/:sessionId/preferences", async (req, res) => {
+  const { query } = req;
+  const { body } = req;
+  const { sessionId } = req.params;
+
+  const result = await sessions.updateSessionPreferences(sessionId, body);
+  console.log("result prefs", result);
+
+  res.send(result);
+});
+
 router.get("/session/:sessionId/calculate", async (req, res) => {
   // const { query } = req;
   const { sessionId } = req.params;

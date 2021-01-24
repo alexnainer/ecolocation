@@ -11,7 +11,6 @@ class PersonButton extends Component {
   async componentDidMount() {}
 
   render() {
-    console.log("this.props", this.props);
     return (
       <Card.Header className="people-list oddCard">
         <p onClick={() => this.props.onClick()} className="personTab">

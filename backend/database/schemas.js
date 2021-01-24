@@ -20,9 +20,12 @@ const locationSchema = new Schema(
 const userSchema = new Schema(
   {
     name: String,
-    geoJson: {
-      type: String,
-      coordinates: [Number],
+    location: {
+      geoJson: {
+        type: String,
+        coordinates: [Number],
+      },
+      searchString: { $type: String, default: "" },
     },
     preferences: {
       carType: String,
@@ -51,7 +54,7 @@ const sessionSchema = new Schema(
       government: Boolean,
       restaurant: Boolean,
       hotel: Boolean,
-      public: Boolean,
+      publicBuilding: Boolean,
     },
     results: {
       cost: Number,
