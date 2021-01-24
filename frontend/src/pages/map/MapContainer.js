@@ -100,7 +100,7 @@ class MapContainer extends Component {
         calls.push("");
       }
     }
-
+    let counter = 0;
     for (let i = 0; i < session.users.length; i++) {
       const result = await axios.get(calls[i]);
       const route = result.data.routes[0].geometry.coordinates;
@@ -110,6 +110,7 @@ class MapContainer extends Component {
 
       if (i >= numberOfSources) {
         if (users[i].results.transportationType) {
+          counter++;
           let colour = randomColourArray[i];
           createLines(
             map,
@@ -117,16 +118,14 @@ class MapContainer extends Component {
             geojson.geometry.coordinates,
             colour
           );
-          places["features"].push(
-            createPlace(descr[i], icon[i], startingCoords[i])
-          );
           createCircle(
             map,
             "point-origin" + i.toString(),
             startingCoords[i],
             colour,
             0
-          );
+            );
+
         }
       } else {
         map.getSource(`lines-route${i}`).setData({
@@ -138,9 +137,6 @@ class MapContainer extends Component {
           },
         });
 
-        places["features"].push(
-          createPlace(descr[i], icon[i], startingCoords[i])
-        );
         map.getSource(`circles-point-origin${i}`).setData({
           type: "FeatureCollection",
           features: [
@@ -155,7 +151,11 @@ class MapContainer extends Component {
           ],
         });
       }
+      places["features"].push(
+        createPlace(descr[i], icon[i], startingCoords[i])
+      );
     }
+    numberOfSources += counter;
     console.log("session", session);
     console.log("session.results", session.results);
     places["features"].push(
@@ -235,10 +235,7 @@ class MapContainer extends Component {
         // descr : users['name']
         // icon : users['results'].transportationType
         // startingCoords : users['geoJson'].coordinates
-        places["features"].push(
-          createPlace(descr[i], icon[i], startingCoords[i])
-        );
-
+        
         // route is users['results'].routes.data.routes[0].geometry.coordinates;
         const geojson = generateGeoJson(route);
         // Generate line from one origin to endpoint
@@ -247,17 +244,20 @@ class MapContainer extends Component {
           "route" + i.toString(),
           geojson.geometry.coordinates,
           colour
-        );
-
-        // Generate origin circles -> use users['geoJson'].coordinates
-        createCircle(
-          map,
-          "point-origin" + i.toString(),
-          startingCoords[i],
-          colour,
-          0
-        );
-      }
+          );
+          
+          // Generate origin circles -> use users['geoJson'].coordinates
+          createCircle(
+            map,
+            "point-origin" + i.toString(),
+            startingCoords[i],
+            colour,
+            0
+            );
+            places["features"].push(
+              createPlace(descr[i], icon[i], startingCoords[i])
+            );
+          }
       // Generate endpoint circle -> use sessions['result']['geoJson'].coordinates
       createCircle(
         map,
