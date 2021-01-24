@@ -22,7 +22,8 @@
 }
 
 .selected {
-  background: #d87a30 !important;
+  border: 3px solid rgb(231, 177, 0) !important;
+  background: rgb(243, 215, 59) !important;
 }
 
 .personTab:hover {
@@ -30,9 +31,9 @@
 }
 
 .evenCard {
-  background: #6ce478;
+  background: #6CE478 !important;
 }
 
 .oddCard {
-  background: #6bbf82 !important;
+  background: #6BBF82 !important;
 }
