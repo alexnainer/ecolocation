@@ -12,11 +12,6 @@ import SearchBar from "./SearchBar";
 
 class Sidebar extends Component {
   render() {
-    const distanceOptions = [
-        { value: '0', label: 'No Limit' },
-        { value: '1', label: '1' },
-        { value: '2', label: '2' },
-      ];
     return (
       <div className="sidebar-container">
             <div className="meeting-header">
