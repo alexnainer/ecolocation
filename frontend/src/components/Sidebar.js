@@ -227,18 +227,30 @@ class Sidebar extends Component {
           <p className="preferenceTextHeaders">Max Travel Distance [km]</p>
           <Form>
             <Form.Label className="maxTravelText">Walking</Form.Label>
-            <Form.Control as="select" className="boxFix" custom>
-              <option value="0">No Limit</option>
+            <Form.Control
+              as="select"
+              className="boxFix"
+              custom
+              value={maxWalkDistance}
+              onChange={(e) =>
+                this.handleUpdateDistance(
+                  "maxWalkDistance",
+                  parseInt(e.target.value)
+                )
+              }
+            >
+              <option value="0">0</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
-              <option value="3">4</option>
-              <option value="3">5</option>
-              <option value="3">6</option>
-              <option value="3">7</option>
-              <option value="3">8</option>
-              <option value="3">9</option>
-              <option value="3">10</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value={NUMBER.MAX_SAFE_INTEGER}>No Limit</option>
             </Form.Control>
             <Form.Label
               className="my-1 mr-2 maxTravelText"
@@ -251,18 +263,26 @@ class Sidebar extends Component {
               className="boxFix"
               id="inlineFormCustomSelectPref"
               custom
+              value={maxBicycleDistance}
+              onChange={(e) =>
+                this.handleUpdateDistance(
+                  "maxBicycleDistance",
+                  parseInt(e.target.value)
+                )
+              }
             >
-              <option value="0">No Limit</option>
+              <option value="0">1</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
-              <option value="3">4</option>
-              <option value="3">5</option>
-              <option value="3">6</option>
-              <option value="3">7</option>
-              <option value="3">8</option>
-              <option value="3">9</option>
-              <option value="3">10</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value={NUMBER.MAX_SAFE_INTEGER}>No Limit</option>
             </Form.Control>
             <div className="testFix">
               <Form.Label
@@ -276,18 +296,26 @@ class Sidebar extends Component {
                 className="boxFix"
                 id="inlineFormCustomSelectPref"
                 custom
+                value={maxCarDistance}
+                onChange={(e) =>
+                  this.handleUpdateDistance(
+                    "maxCarDistance",
+                    parseInt(e.target.value)
+                  )
+                }
               >
-                <option value="0">No Limit</option>
-                <option value="1">10</option>
-                <option value="2">20</option>
-                <option value="3">30</option>
-                <option value="3">40</option>
-                <option value="3">50</option>
-                <option value="3">60</option>
-                <option value="3">70</option>
-                <option value="3">80</option>
-                <option value="3">90</option>
-                <option value="3">100</option>
+                <option value="0">0</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+                <option value="60">60</option>
+                <option value="70">70</option>
+                <option value="80">80</option>
+                <option value="90">90</option>
+                <option value="100">100</option>
+                <option value={NUMBER.MAX_SAFE_INTEGER}>No Limit</option>
               </Form.Control>
             </div>
           </Form>
@@ -329,6 +357,30 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={restaurant}
+                    onClick={(e) =>
+                      this.handleUpdateSessionPreferences(
+                        "restaurant",
+                        e.target.checked
+                      )
+                    }
+                    color="primary"
+                    size="small"
+                    style={{ width: 25 }}
+                  />
+                }
+                label={
+                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
+                    {"Restaurants"}
+                  </span>
+                }
+                labelPlacement="start"
+                className="locationCheckboxText"
+              />
+              <FormControlLabel
+                value="walking"
+                control={
+                  <Checkbox
                     checked={outdoors}
                     onClick={(e) =>
                       this.handleUpdateSessionPreferences(
@@ -350,30 +402,7 @@ class Sidebar extends Component {
                 labelPlacement="start"
                 className="locationCheckboxText"
               />
-              <FormControlLabel
-                value="walking"
-                control={
-                  <Checkbox
-                    checked={restaurant}
-                    onClick={(e) =>
-                      this.handleUpdateSessionPreferences(
-                        "restaurant",
-                        e.target.checked
-                      )
-                    }
-                    color="primary"
-                    size="small"
-                    style={{ width: 25 }}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
-                    {"Restaurants"}
-                  </span>
-                }
-                labelPlacement="start"
-                className="locationCheckboxText"
-              />
+
               <FormControlLabel
                 value="walking"
                 control={
