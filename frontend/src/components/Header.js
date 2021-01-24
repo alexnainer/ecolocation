@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Header.css";
+import logo from '../images/ecoLocation2.png';
 
 class Header extends Component {
   render() {
@@ -7,7 +8,7 @@ class Header extends Component {
       <div className="headerIndex">
         <div className="headerUpperline"></div>
         <div className="d-flex justify-content-center pb-3 header-container">
-          <h1 className="header px-4">[environMEET logo]</h1>
+          <img src={logo} className="logoResize" alt="logo" />
           {/* <FontAwesomeIcon icon={faStarOfLife} style={{ color: "red" }} /> */}
         </div>
         <div className="headerUnderline"></div>

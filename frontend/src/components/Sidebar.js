@@ -56,7 +56,6 @@ class Sidebar extends Component {
       maxBicycleDistance,
       maxCarDistance,
     } = currentUser.preferences;
-
     return (
       <div className="sidebar-container">
         <div className="meeting-header">
