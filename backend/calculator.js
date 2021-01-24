@@ -104,6 +104,8 @@ const driver = async (id) => {
     for (let i = 0; i < session.users; i++) {
         await User.findOneAndUpdate({ _id: session.users[i]._id }, { "results.transportationType": userTransType[i] });
     }
+    await Session.findOneAndUpdate({ id: id }, { "results.cost": minCost });
+    await Session.findOneAndUpdate({ id: id }, { "results.geoJson": locations[bestLocIndex].geoJson})
 
     //search location objects for lowest cost
     return locations[bestLocIndex];
