@@ -36,6 +36,66 @@ class MapContainer extends Component {
     };
   }
 
+  async componentDidUpdate() {
+    console.log("didUpdate");
+    const { session } = this.props;
+    const { users } = session;
+
+    const calls = [];
+    const startingCoords = [];
+    const descr = [];
+    const icon = [];
+
+    let places = { type: "FeatureCollection", features: [] };
+
+    for (let i = 0; i < session.users.length; i++) {
+      calls.push(
+        `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
+      );
+      startingCoords.push(users[i].location.geoJson.coordinates);
+      descr.push(users[i].name);
+      icon.push(determineIconOrigin(users[i].results.transportationType));
+    }
+
+    for (let i = 0; i < session.users.length; i++) {
+      const result = await axios.get(calls[i]);
+      const route = result.data.routes[0].geometry.coordinates;
+
+      const geojson = generateGeoJson(route);
+      console.log(`lines-route${i}`);
+      map.getSource(`lines-route${i}`).setData({
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "LineString",
+          coordinates: geojson.geometry.coordinates,
+        },
+      });
+
+      places["features"].push(
+        createPlace(descr[i], icon[i], startingCoords[i])
+      );
+
+      map.getSource(`circles-point-origin${i}`).setData({
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "Point",
+              coordinates: startingCoords[i],
+            },
+          },
+        ],
+      });
+    }
+    places["features"].push(
+      createPlace("Starbucks", "star", session.results.geoJson.coordinates)
+    );
+    map.getSource("places").setData(places);
+  }
+
   async componentDidMount() {
     map = new mapboxgl.Map({
       center: centerMap,
@@ -49,24 +109,40 @@ class MapContainer extends Component {
       style: "mapbox://styles/mapbox/navigation-guidance-night-v4",
     });
 
+    console.log("this.props", this.props);
+    const { session } = this.props;
+    const { users } = session;
+
     map.on("load", async function () {
       map.resize();
-      const calls = [
-        "https://api.mapbox.com/directions/v5/mapbox/walking/-76.511188%2C44.221491%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
-        "https://api.mapbox.com/directions/v5/mapbox/walking/-76.509857%2C44.233485%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
-        "https://api.mapbox.com/directions/v5/mapbox/walking/-76.482195%2C44.234008%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
-      ];
-      const startingCoords = [
-        [-76.511188, 44.221491],
-        [-76.509857, 44.233485],
-        [-76.482195, 44.234008],
-      ];
+      // const calls = [
+      //   "https://api.mapbox.com/directions/v5/mapbox/walking/-76.511188%2C44.221491%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
+      //   "https://api.mapbox.com/directions/v5/mapbox/walking/-76.509857%2C44.233485%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
+      //   "https://api.mapbox.com/directions/v5/mapbox/walking/-76.482195%2C44.234008%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
+      // ];
+      // const startingCoords = [
+      //   [-76.511188, 44.221491],
+      //   [-76.509857, 44.233485],
+      //   [-76.482195, 44.234008],
+      // ];
 
-      const descr = [
-        "Julia", "Bob", "Bogdanoff"
-      ];
+      const calls = [];
+      const startingCoords = [];
+      const descr = [];
+      const icon = [];
+      for (let i = 0; i < session.users.length; i++) {
+        calls.push(
+          `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
+        );
+        startingCoords.push(users[i].location.geoJson.coordinates);
+        descr.push(users[i].name);
+        icon.push(determineIconOrigin(users[i].results.transportationType));
+      }
 
-      const icon = ["car", "bicycle", "toilet"]
+      // const descr = ["Julia", "Bob", "Bogdanoff"];
+
+      // const icon = ["car", "bicycle", "toilet"];
+
       shuffleArray(randomColourArray);
       var places = { type: "FeatureCollection", features: [] };
 
@@ -87,7 +163,9 @@ class MapContainer extends Component {
         // descr : users['name']
         // icon : users['results'].transportationType
         // startingCoords : users['geoJson'].coordinates
-        places["features"].push(createPlace(descr[i], icon[i], startingCoords[i]));
+        places["features"].push(
+          createPlace(descr[i], icon[i], startingCoords[i])
+        );
 
         // route is users['results'].routes.data.routes[0].geometry.coordinates;
         const geojson = generateGeoJson(route);
@@ -109,8 +187,16 @@ class MapContainer extends Component {
         );
       }
       // Generate endpoint circle -> use sessions['result']['geoJson'].coordinates
-      createCircle(map, "point-endpoint", [-76.500344, 44.23104], "#000000", 0);
-      places["features"].push(createPlace("Starbucks", "star", [-76.500344, 44.23104]));
+      createCircle(
+        map,
+        "point-endpoint",
+        session.results.geoJson.coordinates,
+        "#000000",
+        0
+      );
+      places["features"].push(
+        createPlace("Starbucks", "star", session.results.geoJson.coordinates)
+      );
       console.log(places);
       addSource(map, places);
       addLabelLayer(map);
@@ -140,12 +226,12 @@ class MapContainer extends Component {
 }
 
 function determineIconOrigin(transportType) {
-  if (transportType === "Driving") {
+  if (transportType === "driving") {
     return "car";
-  } else if (transportType === "Cycling") {
-    return "cycling";
+  } else if (transportType === "walking") {
+    return "toilet";
   } else {
-    return "golf";
+    return "bicycle";
   }
 }
 
@@ -154,25 +240,27 @@ function determineIconEndPoint(endPointType) {
 }
 
 function createCircle(map, id, coordinates, colour, radius) {
+  map.addSource(`circles-${id}`, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "Point",
+            coordinates: coordinates,
+          },
+        },
+      ],
+    },
+  });
+
   map.addLayer({
     id: id,
     type: "circle",
-    source: {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: coordinates,
-            },
-          },
-        ],
-      },
-    },
+    source: `circles-${id}`,
     paint: {
       "circle-radius": radius,
       "circle-color": colour,
@@ -222,20 +310,23 @@ function addLabelLayer(map) {
 }
 
 function createLines(map, id, coordinates, color) {
+  console.log(`lines-${id}`);
+  map.addSource(`lines-${id}`, {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: coordinates,
+      },
+    },
+  });
+
   map.addLayer({
     id: id,
     type: "line",
-    source: {
-      type: "geojson",
-      data: {
-        type: "Feature",
-        properties: {},
-        geometry: {
-          type: "LineString",
-          coordinates: coordinates,
-        },
-      },
-    },
+    source: `lines-${id}`,
     layout: {
       "line-join": "round",
       "line-cap": "round",
