@@ -65,6 +65,7 @@ const driver = (id) => {
     
     var minCost = 100000;
     var bestLocIndex;
+    var userTransType = [];
 
     // loop through locations and users
     for (l = 0; l < locations.length; l++) {
@@ -77,13 +78,14 @@ const driver = (id) => {
 
             if (distanceWalk <= users[u].walkDist) {
                 //user will walk no C02 Cost
-                //user[u].results.transportationType
+                userTransType.push("walking");
             }else if (distanceBike <= users[u].bikeDist) {
                 //user will bike no C02 Cost
-                user[u].results
+                userTransType.push("cycling");
             }else if (distanceDrive <= users[u].driveDist) {
                 //user will drive
                 cost += distance*users[u].preferences.carType;
+                userTransType.push("driving");
             }else {
                 //Not a viable location, user cannot get there
             }
@@ -91,10 +93,17 @@ const driver = (id) => {
         if (cost < minCost) {
             minCost = cost;
             bestLocIndex = l;
+            //update users best tranport types
+            for (u = 0; u < users.length; u++) {
+                session.users[u].results
+            }
+            //user[u].results.transportationType
         }
     }
 
     //search location objects for lowest cost
     return locations[bestLocIndex];
 }
+
+module.exports = driver;
 
