@@ -63,13 +63,15 @@ class MapPage extends Component {
   handleCalculate = async () => {
     const { sessionId } = this.props.match.params;
     await api.getCalculate(sessionId);
+    const response = await api.getSession(sessionId);
+    this.setState({ loading: false, session: response.data });
   };
 
   render() {
     return (
       <div>
         <Header />
-        <MapContainer />
+        <MapContainer session={this.state.session} />
         {!this.state.loading && (
           <Sidebar
             loading={this.state.loading}
