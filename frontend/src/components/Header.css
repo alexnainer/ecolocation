@@ -11,8 +11,8 @@
 }
 
 .header-container {
-  background: linear-gradient(-10deg, #01AF5C, #2bdf67, #01AF5C);
-  background-size: 200% 200%;
+  background: linear-gradient(-10deg, #00964d, #40cc63, #00964d);
+  background-size: 250% 250%;
   animation: gradient 4s ease infinite;
   background-color: #01AF5C;
   z-index: 1 !important;
