@@ -52,7 +52,7 @@ const calculateDistance = (user, loc, tansportType) => {
     return result.routes[0].distance;
 }
 
-const driver = (id) => {
+const driver = async (id) => {
     session = getSession(id)
     users = session.users;
     locations = createPosibleLocationArray(session.locationPreferences.cafe, 
