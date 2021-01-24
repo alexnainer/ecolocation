@@ -8,7 +8,6 @@ import axios from "axios";
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 let map;
 
-
 class MapContainer extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +15,6 @@ class MapContainer extends Component {
       loading: false,
     };
   }
-
 
   async componentDidMount() {
     var mapBounds = [
@@ -33,50 +31,106 @@ class MapContainer extends Component {
       style: "mapbox://styles/mapbox/streets-v11",
     });
 
-    map.resize();
-
     map.on("load", async function () {
       map.resize();
-      const result = await axios.get("https://api.mapbox.com/directions/v5/mapbox/walking/-76.502106%2C44.257578%3B-76.285721%2C44.355278?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ");
-      console.log(result);
-      const json = result.data;
-      const data = json.routes[0];
-      const route = data.geometry.coordinates;
-      console.log(route);
-      const geojsont = {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'LineString',
-          coordinates: route
-        }
-      };
-      console.log("LENGTH: ", route.length);
+      const calls = ["https://api.mapbox.com/directions/v5/mapbox/walking/-76.511188%2C44.221491%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
+      "https://api.mapbox.com/directions/v5/mapbox/walking/-76.509857%2C44.233485%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ",
+      "https://api.mapbox.com/directions/v5/mapbox/walking/-76.482195%2C44.234008%3B-76.500344%2C44.231040?alternatives=false&overview=full&geometries=geojson&access_token=pk.eyJ1IjoiYWxleDlyIiwiYSI6ImNraDgybmpzaDE2ejEycm84NXpoOTJidjIifQ.3orrdNJLc-SghBYF8paqzQ"];
+      const startingCoords = [[-76.511188,44.221491], [-76.509857,44.233485], [-76.482195,44.234008]]
+      for (let i=0; i < calls.length; i++) {
+        var randomColour = "#" + ((1<<24)*Math.random() | 0).toString(16);
+        const result = await axios.get(calls[i]);
+        const route = result.data.routes[0].geometry.coordinates
+
+        const geojsont = {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: route,
+          },
+        };
+        console.log("LENGTH: ", route.length);
+        map.addLayer({
+          id: "route" + i.toString(),
+          type: "line",
+          source: {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "LineString",
+                coordinates: geojsont.geometry.coordinates,
+              },
+            },
+          },
+          layout: {
+            "line-join": "round",
+            "line-cap": "round",
+          },
+          paint: {
+            "line-color": randomColour,
+            "line-width": 5,
+            "line-opacity": 0.75,
+          },
+        });
+
+        map.addLayer({
+          id: "point" + i.toString(),
+          type: "circle",
+          source: {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: [
+                {
+                  type: "Feature",
+                  properties: {},
+                  geometry: {
+                    type: "Point",
+                    coordinates: startingCoords[i],
+                  },
+                },
+              ],
+            },
+          },
+          paint: {
+            "circle-radius": 10,
+            "circle-color": randomColour,
+          },
+        });
+
+
+  
+      }
       map.addLayer({
-        id: 'route',
-        type: 'line',
+        id: "point",
+        type: "circle",
         source: {
-          type: 'geojson',
+          type: "geojson",
           data: {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'LineString',
-              coordinates: geojsont.geometry.coordinates,
-            }
-          }
-        },
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                properties: {},
+                geometry: {
+                  type: "Point",
+                  coordinates: [-76.500344,44.231040],
+                },
+              },
+            ],
+          },
         },
         paint: {
-          'line-color': '#3887be',
-          'line-width': 5,
-          'line-opacity': 0.75
-        }
+          "circle-radius": 20,
+          "circle-color": "#000000",
+        },
       });
 
+
+      //MapContainer.generateMapLines();
     });
   }
 
