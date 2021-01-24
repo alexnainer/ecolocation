@@ -17,6 +17,7 @@ router.get("/session/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
 
   const result = await sessions.getSession(sessionId);
+  console.log("result", result);
   res.send(result);
 });
 
@@ -30,7 +31,7 @@ router.get("/session/:sessionId/calculate", async (req, res) => {
 
 router.post("/user/new", async (req, res) => {
   const { body } = req;
-  const result = await users.createUser(body.name);
+  const result = await users.createUser(body);
   res.send(result);
 });
 
