@@ -1,8 +1,7 @@
-# ECO LOCATION
 ### WINNER of QHacks2021 City of Kingston Mayor’s Entrepreneur Challenge Prize
 
 ## Authors
-* **[PurpleBooth](https://github.com/PurpleBooth)**
-* **[PurpleBooth](https://github.com/PurpleBooth)**
-* **[PurpleBooth](https://github.com/PurpleBooth)**
-* **[PurpleBooth](https://github.com/PurpleBooth)**
+* **[Aleks Jugovic](https://github.com/Aleksjug)**
+* **[Alex Nainer](https://github.com/alexnainer)**
+* **[Ryan Protheroe](https://github.com/Trenchh)**
+* **[Michael Taciuk](https://github.com/MichaelGW)**
