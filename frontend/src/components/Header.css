@@ -11,6 +11,9 @@
 }
 
 .header-container {
+  background: linear-gradient(-10deg, #01AF5C, #13e95a, #01AF5C);
+  background-size: 200% 200%;
+  animation: gradient 4s ease infinite;
   background-color: #01AF5C;
   z-index: 1 !important;
 }
@@ -19,7 +22,7 @@
   position: absolute;
   width: 100%;
   height: 2px;
-  background-color: #00DC72;
+  background-color: #008a49;
   z-index: 2 !important;
 }
 
@@ -33,6 +36,12 @@
   z-index: 5 !important;
 }
 
+.logoResize {
+  margin-top: 2px;
+  margin-bottom: -13px;
+  max-width: 230px;
+  max-height: 150px;
+}
 
 @keyframes gradient {
   0% {
