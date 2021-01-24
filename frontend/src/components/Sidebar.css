@@ -153,6 +153,7 @@
     width: 100%;
     height: 15%;
     max-height: 15%;
+    padding-right: 7px;
 }
 
 .preferenceText {
