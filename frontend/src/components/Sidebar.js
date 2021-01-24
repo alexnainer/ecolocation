@@ -7,7 +7,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Form from 'react-bootstrap/Form'
 import Select from 'react-select';
-import Card from "react-bootstrap/Card";
 import SearchBar from "./SearchBar";
 
 
@@ -45,7 +44,6 @@ class Sidebar extends Component {
                     <Card.Header className="people-list oddCard" >
                         <p className="personTab">Person 3</p>
                     </Card.Header>
-
                     <Card.Header className="people-list evenCard" >
                         <p className="personTab">Person 3</p>
                     </Card.Header>
@@ -79,14 +77,14 @@ class Sidebar extends Component {
                         <FormControlLabel
                             value="walking"
                             control={<Checkbox color="primary" size="small" style={{ width: 25}}/>}
-                            label="Walking"
+                            label={<span className="methodText">{"Walking"}</span>}
                             labelPlacement="start"
                             className="checkboxText"
                         />
                         <FormControlLabel
                             value="walking"
                             control={<Checkbox color="primary" size="small" style={{ width: 25}} />}
-                            label="Bicycle"
+                            label={<span className="methodText">{"Bicycle"}</span>}
                             width="1px"
                             labelPlacement="start"
                             className="checkboxText"
@@ -94,35 +92,85 @@ class Sidebar extends Component {
                         <FormControlLabel
                             value="walking"
                             control={<Checkbox color="primary" size="small" style={{ width: 25}}/>}
-                            label="Car"
+                            label={<span className="methodText">{"Car"}</span>}
                             labelPlacement="start"
                             className="checkboxText"
                         />
                         <FormControlLabel
                             value="walking"
                             control={<Checkbox color="primary" size="small" style={{ width: 25}}/>}
-                            label="Carpool"
+                            label={<span className="methodText">{"Carpool"}</span>}
                             labelPlacement="start"
                             className="checkboxText"
                         />
                     </FormGroup>
                 </FormControl>
                 <p className="preferenceTextHeaders">Max Travel Distance [km]</p>
-                <Form inline>
-                    <Form.Label className="my-1 mr-2" htmlFor="inlineFormCustomSelectPref">
+                <Form>
+                    <Form.Label className="maxTravelText">
                         Walking
                     </Form.Label>
                     <Form.Control
                         as="select"
-                        className="my-1 mr-sm-2 testFix"
+                        className="boxFix"
+                        custom
+                    >
+                        <option value="0">No Limit</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="3">4</option>
+                        <option value="3">5</option>
+                        <option value="3">6</option>
+                        <option value="3">7</option>
+                        <option value="3">8</option>
+                        <option value="3">9</option>
+                        <option value="3">10</option>
+                    </Form.Control>
+                    <Form.Label className="my-1 mr-2 maxTravelText" htmlFor="inlineFormCustomSelectPref">
+                        Bicycle
+                    </Form.Label>
+                    <Form.Control
+                        as="select"
+                        className="boxFix"
                         id="inlineFormCustomSelectPref"
                         custom
                     >
                         <option value="0">No Limit</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="3">4</option>
+                        <option value="3">5</option>
+                        <option value="3">6</option>
+                        <option value="3">7</option>
+                        <option value="3">8</option>
+                        <option value="3">9</option>
+                        <option value="3">10</option>
                     </Form.Control>
+                    <div className="testFix">
+                        <Form.Label className="my-1 mr-2 maxTravelText" htmlFor="inlineFormCustomSelectPref">
+                            Car
+                        </Form.Label>
+                        <Form.Control
+                            as="select"
+                            className="boxFix"
+                            id="inlineFormCustomSelectPref"
+                            custom
+                        >
+                            <option value="0">No Limit</option>
+                            <option value="1">10</option>
+                            <option value="2">20</option>
+                            <option value="3">30</option>
+                            <option value="3">40</option>
+                            <option value="3">50</option>
+                            <option value="3">60</option>
+                            <option value="3">70</option>
+                            <option value="3">80</option>
+                            <option value="3">90</option>
+                            <option value="3">100</option>
+                        </Form.Control>
+                    </div>
                 </Form>
             </div>
 
@@ -131,9 +179,56 @@ class Sidebar extends Component {
                     <p className="preferenceText">Location Preferences</p>
             </div>
             <div className="locationUnderline">
-
             </div>
             <div className="locationPreferences">
+            <FormControl component="fieldset">
+                    <FormGroup aria-label="position" row>
+                        <FormControlLabel
+                            value="walking"
+                            control={<Checkbox color="primary" size="small" style={{ width: 25}}/>}
+                            label={<span style={{ fontSize: '30px', fontFamily: "Teko"}}>{"Public Buildings"}</span>}
+                            labelPlacement="start"
+                            className="locationCheckboxText"
+                        />
+                        <FormControlLabel
+                            value="walking"
+                            control={<Checkbox color="primary" size="small" style={{ width: 25}} />}
+                            label={<span style={{ fontSize: '30px', fontFamily: "Teko"}}>{"Outdoors"}</span>}
+                            width="1px"
+                            labelPlacement="start"
+                            className="locationCheckboxText"
+                        />                       
+                         <FormControlLabel
+                            value="walking"
+                            control={<Checkbox color="primary" size="small" style={{ width: 25 }} />}
+                            label={<span style={{ fontSize: '30px', fontFamily: "Teko"}}>{"Restaurants"}</span>}
+                            labelPlacement="start"
+                            className="locationCheckboxText"
+                        />
+                        <FormControlLabel
+                            value="walking"
+                            control={<Checkbox color="primary" size="small" style={{ width: 25 }} />}
+                            label={<span style={{ fontSize: '30px', fontFamily: "Teko"}}>{"Café"}</span>}
+                            labelPlacement="start"
+                            className="locationCheckboxText"
+                        />
+                        <FormControlLabel
+                            value="walking"
+                            control={<Checkbox color="primary" size="small" style={{ width: 25}}/>}
+                            label={<span style={{ fontSize: '30px', fontFamily: "Teko"}}>{"Gov. Buildings"}</span>}
+                            labelPlacement="start"
+                            className="locationCheckboxText"
+                        />
+                        <FormControlLabel
+                            value="walking"
+                            control={<Checkbox color="primary" size="small" style={{ width: 25}}/>}
+                            label={<span style={{ fontSize: '30px', fontFamily: "Teko"}}>{"Hotel"}</span>}
+                            labelPlacement="start"
+                            className="locationCheckboxText"
+                        />
+                    </FormGroup>
+                </FormControl>
+
             </div>
       </div>
     );
