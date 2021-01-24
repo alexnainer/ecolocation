@@ -35,7 +35,11 @@ class MapPage extends Component {
   }
 
   async handleUpdatePerson(user) {
+    const { sessionId } = this.props.match.params;
+    this.setState({ loading: true });
     await api.postUpdateUser(user);
+    const response = await api.getSession(sessionId);
+    this.setState({ loading: false, session: response.data });
   }
 
   async handleUpdateSession(session) {
