@@ -25,6 +25,10 @@ const api = {
   postUpdateUser(user) {
     return axios.post(`/user/${user._id}`, user);
   },
+
+  getCalculate(id) {
+    return axios.get(`/session/${id}/calculate`);
+  },
 };
 
 export default api;

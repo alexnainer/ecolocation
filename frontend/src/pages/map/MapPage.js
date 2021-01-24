@@ -46,6 +46,11 @@ class MapPage extends Component {
     );
   }
 
+  handleCalculate = async () => {
+    const { sessionId } = this.props.match.params;
+    await api.getCalculate(sessionId);
+  };
+
   render() {
     return (
       <div>
@@ -60,7 +65,7 @@ class MapPage extends Component {
             updateSession={(session) => this.handleUpdateSession(session)}
           />
         )}
-        <Calculate />
+        <Calculate onClick={this.handleCalculate} />
       </div>
     );
   }

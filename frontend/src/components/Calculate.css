@@ -1,19 +1,23 @@
-.calculateContainer{
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.32);
-    width: 280px;
-    height: 90px;
-    left:20.1%;
-    top: 90.5%;
-    vertical-align: bottom;
+.calculateContainer {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.32);
+  width: 280px;
+  height: 90px;
+  left: 20.1%;
+  top: 90.5%;
+  vertical-align: bottom;
+}
+
+.calculateContainer:hover {
+  cursor: pointer;
 }
 
 .textStyle {
-    color: white;
-    font-family: Teko;
-    font-style: italic;
-    font-size: 70px;
-    text-align: center;
+  color: white;
+  font-family: Teko;
+  font-style: italic;
+  font-size: 70px;
+  text-align: center;
 }
 
 @import url(//fonts.googleapis.com/css?family=Teko);

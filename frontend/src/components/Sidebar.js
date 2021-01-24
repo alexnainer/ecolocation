@@ -30,13 +30,11 @@ class Sidebar extends Component {
   }
 
   handleAddPerson = () => {
-    // console.log("add person", this.props);
     this.props.addPerson(`Person ${this.props.session.users.length + 1}`);
   };
 
   handlePersonSelected = (user) => {
     this.setState({ currentUser: user });
-    // console.log("user", user);
   };
 
   async handleUpdateDistance(type, distance) {
@@ -83,7 +81,6 @@ class Sidebar extends Component {
   };
 
   async handleUpdateSessionPreferences(type, value) {
-    // console.log("type, value", type, value);
     const session = {
       ...this.props.session,
       locationPreferences: {
