@@ -102,8 +102,6 @@ class Sidebar extends Component {
       maxCarDistance,
     } = currentUser.preferences;
 
-    // console.log("*****session", this.props.session);
-
     const { session } = this.props;
     const {
       cafe,
@@ -113,7 +111,6 @@ class Sidebar extends Component {
       hotel,
       publicBuilding,
     } = session.locationPreferences;
-
     return (
       <div className="sidebar-container">
         <div className="meeting-header">
