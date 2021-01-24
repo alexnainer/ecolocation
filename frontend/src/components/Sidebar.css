@@ -164,16 +164,30 @@
 }
 
 .preferenceTextHeaders {
+    margin-bottom: 0;
     font-family: Teko;
     font-style: normal;
     font-size: 30px;
-    padding-left: 20px;
+    padding-left: 15px;
     text-align: left;
     letter-spacing: 0.03em;
-    text-shadow: 0px 2px 3px #D0D8E6, 0 0 0 #233e66d2, 0px 2px 3px #D0D8E6;
+    text-shadow: 0px 2px 3px #D0D8E6, 0 0 0 #061833d2, 0px 2px 3px #D0D8E6;
     color: #667c9d6b;
 }
 
+.checkboxText {
+    color:#6d7888;
+    font-family: Teko;
+    font-style: normal;
+    font-weight: bold;
+    margin-top: -10px;
+}
+
+.testFix {
+    font-size: 14px;
+    width: 80px;
+    height: 30px;
+}
 
   @import url(//fonts.googleapis.com/css?family=Teko);
 
