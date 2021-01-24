@@ -20,7 +20,7 @@ router.get("/session/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
 
   const result = await sessions.getSession(sessionId);
-  console.log("result", result);
+  //console.log("result", result);
   res.send(result);
 });
 
@@ -39,7 +39,7 @@ router.get("/session/:sessionId/calculate", async (req, res) => {
   // const { query } = req;
   const { sessionId } = req.params;
   log("Calculating for", sessionId);
-  // const result = driver(sessionId);
+  const result = driver(sessionId);
   // const result = await sessions.getSession(sessionId);
   res.sendStatus(200);
 });

@@ -1,45 +1,49 @@
 const { Location, Session, User } = require("./database/schemas");
 const api = require("./api");
 
-const getSession = async (id) => {
-  return await Session.find({ id: id });
+const getSession = (id) => {
+  return Session.findOne({ id: id });
 };
 
-const getLocationByType = async (type) => {
-  return await Location.find({ locationType: type });
+const getUsers = async (userIDs) => {
+    users = [];
+  for (let u = 0; u < userIDs.length; u++) {
+    users.push( await User.find({ _id: userIDs[u]}))
+  }
+  return users;
 };
 
-const createPosibleLocationArray = (
+const getLocationByType = (type) => {
+  return Location.find({ locationType: type });
+};
+
+const createPosibleLocationArray = async (
+  cafeTrue,
   outdoorsTrue,
   governmentTrue,
-  publicTrue,
-  cafeTrue,
   restaurantTrue,
-  hotelTrue
+  hotelTrue,
+  publicTrue
 ) => {
   var posibleLocations = [];
 
   if (outdoorsTrue) {
-    posibleLocations = posibleLocations.concat(getLocationByType("Outdoors"));
+    posibleLocations = posibleLocations.concat(await getLocationByType("Outdoors"));
   }
   if (governmentTrue) {
-    posibleLocations = posibleLocations.concat(
-      getLocationByType("Government Building")
-    );
+    posibleLocations = posibleLocations.concat(await getLocationByType("Government Building"));
   }
   if (publicTrue) {
-    posibleLocations = posibleLocations.concat(
-      getLocationByType("Public Building")
-    );
+    posibleLocations = posibleLocations.concat(await getLocationByType("Public Building"));
   }
   if (cafeTrue) {
-    posibleLocations = posibleLocations.concat(getLocationByType("Cafe"));
+    posibleLocations = posibleLocations.concat(await getLocationByType("Cafe"));
   }
   if (restaurantTrue) {
-    posibleLocations = posibleLocations.concat(getLocationByType("Restaurant"));
+    posibleLocations = posibleLocations.concat(await getLocationByType("Restaurant"));
   }
   if (hotelTrue) {
-    posibleLocations = posibleLocations.concat(getLocationByType("Hotel"));
+    posibleLocations = posibleLocations.concat(await getLocationByType("Hotel"));
   }
 
   return posibleLocations;
@@ -54,110 +58,101 @@ function formatCoordinates(coordinates) {
   let resultString = "";
   if (resultStrings[0]) {
     resultString += resultStrings[0];
-    for (i = 1; i < resultStrings.length; i++) {
+    for (let i = 1; i < resultStrings.length; i++) {
       resultString += "%3B" + resultStrings[i];
     }
   }
   return resultString.trim();
 }
 
-const calculateDistance = (user, loc, tansportType) => {
+const calculateDistanceFull = async (user, loc, tansportType) => {
   helperString = formatCoordinates([user, loc]);
   options = {
     routing: tansportType,
     coordinates: helperString,
   };
-  result = api.getMapBoxDirections(options);
-  return result;
+  result = await api.getMapBoxDirections(options);
+  //console.log("result", result.data.routes[0].distance);
+  return result.data;
 };
 
-const driver = async (id) => {
-  session = getSession(id);
-  users = session.users;
-  preferences = session.locationPreferences;
-  locations = createPosibleLocationArray(
-    preferences.cafe,
-    preferences.outdoors,
-    preferences.government,
-    preferences.restaurant,
-    preferences.hotel,
-    preferences.public
-  );
+const calculateDistance = async (user, loc, tansportType) => {
+    helperString = formatCoordinates([user, loc]);
+    options = {
+      routing: tansportType,
+      coordinates: helperString,
+    };
+    result = await api.getMapBoxDirections(options);
+    //console.log("result", result.data.routes[0].distance);
+    result = result.data.routes[0].distance;
+    return result;
+  };
 
+const driver = async (id) => {
+  session = await getSession(id);
+  userIDs = session.users;
+  users = await getUsers(userIDs);
+  locations = await createPosibleLocationArray(
+    session.locationPreferences.cafe,
+    session.locationPreferences.outdoors,
+    session.locationPreferences.government,
+    session.locationPreferences.restaurant,
+    session.locationPreferences.hotel,
+    session.locationPreferences.publicBuilding
+  );
+  
   var minCost = Number.MAX_SAFE_INTEGER;
   var bestLocIndex;
-  var userTransType = [];
+  var userTransTypes = [];
 
   // loop through locations and users
-  for (l = 0; l < locations.length; l++) {
+  for (let l = 0; l < locations.length; l++) {
     var cost = 0;
-    for (u = 0; u < users.length; u++) {
-      distanceWalk = calculateDistance(
-        users[u].geoJson.coordinates,
-        locations[l].geoJson.coordinates,
-        "walking"
-      ).routes[0].distance;
-      distanceCycling = calculateDistance(
-        users[u].geoJson.coordinates,
-        locations[l].geoJson.coordinates,
-        "cycling"
-      ).routes[0].distance;
-      distanceDriving = calculateDistance(
-        users[u].geoJson.coordinates,
-        locations[l].geoJson.coordinates,
-        "driving"
-      ).routes[0].distance;
+    var tempTransTypes = [];
+    for (let u = 0; u < users.length; u++) {
+      let distanceWalk = await calculateDistance(users[u][0].location.geoJson.coordinates,locations[l].geoJson.coordinates,"walking");
+      let distanceCycling = await calculateDistance(users[u][0].location.geoJson.coordinates,locations[l].geoJson.coordinates,"cycling");
+      let distanceDriving = await calculateDistance(users[u][0].location.geoJson.coordinates,locations[l].geoJson.coordinates,"driving");
 
-      if (distanceWalk <= users[u].walkDist) {
+      console.log("@@@@@@", users[u][0].preferences.maxWalkDistance)
+      console.log("dist", distanceWalk)
+      if (distanceWalk <= (users[u][0].preferences.maxWalkDistance)*1000) {
         //user will walk no C02 Cost
-        userTransType.push("walking");
-      } else if (distanceBike <= users[u].bikeDist) {
+        tempTransTypes.push("walking");
+      } else if (distanceCycling <= (users[u][0].preferences.maxBicycleDistance)*1000) {
         //user will bike no C02 Cost
-        userTransType.push("cycling");
-      } else if (distanceDrive <= users[u].driveDist) {
+        tempTransTypes.push("cycling");
+      } else if (distanceDriving <= (users[u][0].preferences.maxCarDistance)*1000) {
         //user will drive
-        cost += distance * users[u].preferences.carType;
-        userTransType.push("driving");
+        //cost += distanceDriving * users[u][0].preferences.carType;
+        cost += distanceDriving * 200;
+        tempTransTypes.push("driving");
       } else {
         //Not a viable location, user cannot get there
+        console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
       }
     }
     if (cost < minCost) {
       minCost = cost;
       bestLocIndex = l;
+      userTransTypes = tempTransTypes;
+      console.log("minCost", minCost);
+      console.log("index", bestLocIndex);
+      console.log("TransTypes", userTransTypes);
       //update users best tranport types
-      //user[u].results.transportationType
+    
     }
   }
 
-  // we have best end-point (stored at bestLocIndex)
-  // we have each users starting point
-
-  // we need result of each users direction API call from origin to endpoint
-
-  for (let i = 0; i < session.users; i++) {
-    await User.findOneAndUpdate(
-      { _id: session.users[i]._id },
-      { "results.transportationType": userTransType[i] }
-    );
-    var result = calculateDistance(
-      user[i].geoJson.coordinates,
-      location[bestLocIndex].geoJson.coordinates,
-      userTransType[i]
-    );
-    await User.findOneAndUpdate(
-      { _id: session.users[i]._id },
-      { "results.routes": result }
-    );
+  for (let i = 0; i < session.users.length; i++) {
+    await User.findOneAndUpdate({ _id: session.users[i]._id },{ "results.transportationType": userTransTypes[i] });
+    //console.log("BoogMEOnce", users[i][0].location);
+    var result = calculateDistanceFull(users[i][0].location.geoJson.coordinates,locations[bestLocIndex].geoJson.coordinates,userTransTypes[i]);
+    await User.findOneAndUpdate({ _id: session.users[i]._id },{ "results.routes": result });
   }
   await Session.findOneAndUpdate({ id: id }, { "results.cost": minCost });
-  await Session.findOneAndUpdate(
-    { id: id },
-    { "results.geoJson": locations[bestLocIndex].geoJson }
-  );
+  await Session.findOneAndUpdate({ id: id },{ "results.geoJson": locations[bestLocIndex].geoJson });
 
-  //search location objects for lowest cost
-  //return locations[bestLocIndex];
 };
 
 module.exports = driver;

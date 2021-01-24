@@ -18,8 +18,9 @@ const getKingstonPointData = (options) => {
 };
 
 const getMapBoxDirections = (options) => {
+  //console.log(`${mapboxDirectionsApi}${options.routing}/${options.coordinates}?alternatives=false&geometries=geojson&overview=full&access_token=${mapBoxApiKey}`)
   return axios.get(
-    `${mapboxDirectionsApi}${options.routing}/${options.coordinates};?alternatives=false&geometries=geojson&overview=full&access_token=${mapBoxApiKey}`
+    `${mapboxDirectionsApi}${options.routing}/${options.coordinates}?alternatives=false&geometries=geojson&overview=full&access_token=${mapBoxApiKey}`
   );
 };
 
