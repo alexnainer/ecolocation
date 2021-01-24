@@ -1,4 +1,4 @@
-### WINNER of QHacks2021 City of Kingston Mayor’s Entrepreneur Challenge Prize
+### WINNER of QHacks2021 City of Kingston Mayor’s Entrepreneur Challenge
 
 ## Authors
 * **[Aleks Jugovic](https://github.com/Aleksjug)**
