@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
 import api from "../../api/api";
 import { withRouter } from "react-router";
+import Calculate from "../../components/Calculate"
 
 class MapPage extends Component {
   constructor(props) {
@@ -14,14 +15,27 @@ class MapPage extends Component {
   async componentDidMount() {
     const { sessionId } = this.props.match.params;
 
-    let response, session;
+    let response;
     if (sessionId) {
       response = await api.getSession(sessionId);
     } else {
       response = await api.getNewSession();
       this.props.history.push(`/${response.data.id}`);
     }
-    this.setState({ loading: false });
+    this.setState({ loading: false, session: response.data });
+  }
+
+  async handleAddPerson(name) {
+    const { sessionId } = this.props.match.params;
+
+    this.setState({ loading: true });
+    await api.postNewUser({ name, sessionId });
+    const response = await api.getSession(sessionId);
+    this.setState({ loading: false, session: response.data });
+  }
+
+  async handleUpdatePerson(user) {
+    await api.postUpdateUser(user);
   }
 
   render() {
@@ -29,7 +43,13 @@ class MapPage extends Component {
       <div>
         <Header />
         <MapContainer />
-        <Sidebar loading={this.state.loading} />
+        <Sidebar
+          loading={this.state.loading}
+          session={this.state.session}
+          addPerson={(name) => this.handleAddPerson(name)}
+          updatePerson={(user) => this.handleUpdatePerson(user)}
+        />
+        <Calculate />
       </div>
     );
   }

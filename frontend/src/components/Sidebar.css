@@ -15,10 +15,12 @@
 
 .meeting-header {
     position: relative;
+    padding-top: 5px;
+    padding-bottom: 65px;
     width: 100%;
-    height: 8%;
+    height: 9%;
     left: 0;
-    top: 9%;
+    top: 8%;
 }
 
 .list-container {
@@ -115,6 +117,7 @@
 
 .userPreferencesHeader {
     background-color: #728196;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.26);
     width: 100%;
     height: 30px;
     margin-top: 6%;
@@ -124,7 +127,7 @@
     background: #576A84;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.26);
     width: 100%;
-    height: 4px;
+    min-height: 4px;
 }
 .userPreferences {
     background: #D0D8E6;
@@ -142,13 +145,14 @@
     background: #3E6EB5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.26);
     width: 100%;
-    height: 4px;
+    min-height: 4px;
 }
 
 .locationPreferences {
     background: #C7DBF9;
     width: 100%;
     height: 15%;
+    max-height: 15%;
 }
 
 .preferenceText {
@@ -183,10 +187,45 @@
     margin-top: -10px;
 }
 
-.testFix {
+.locationCheckboxText {
+    margin-bottom: 0;
+    font-family: Teko;
+    font-style: normal;
+    font-size: 30px !important;
+    padding-left: 15px;
+    text-align: left;
+    letter-spacing: 0.03em;
+    text-shadow: 0px 2px 3px #C7DBF9, 0 0 0 #061833d2, 0px 2px 3px #C7DBF9;
+    color: #667c9d6b;
+}
+
+.methodText {
+    color:rgba(109, 120, 136, 0.78);
+    font-family: Teko;
+    font-style: normal;
+    font-size: 20px;
+    margin-left: 5px;
+}
+
+.maxTravelText {
+    color:rgba(109, 120, 136, 0.78);
+    font-family: Teko;
+    font-style: normal;
+    font-size: 20px;
+    margin-left: 20px;
+    margin-right: 5px;
+    text-align: center;
+}
+
+.boxFix {
     font-size: 14px;
     width: 80px;
-    height: 30px;
+    height: 23px;
+}
+
+.testFix{
+    margin-top: -8px;
+
 }
 
   @import url(//fonts.googleapis.com/css?family=Teko);

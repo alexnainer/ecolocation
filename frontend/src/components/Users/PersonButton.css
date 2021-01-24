@@ -1,0 +1,30 @@
+.people-list {
+  margin: 0 auto;
+  margin-top: 8px !important;
+  width: 92%;
+  min-height: 10%;
+  background: #00d649 !important;
+  box-shadow: 0px 1px 0px #6a6a6a !important;
+  border-radius: 16px !important;
+}
+
+.personTab {
+  text-align: left;
+  margin-top: -5px;
+  margin-bottom: -12px;
+  letter-spacing: 0.03em;
+  font-family: Teko;
+  font-style: normal;
+  font-size: 27px;
+  color: #006115;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: rgba(100, 100, 100, 0.479);
+}
+
+.evenCard {
+  background: #6ce478 !important;
+}
+
+.oddCard {
+  background: #6bbf82 !important;
+}

@@ -14,7 +14,10 @@ const getSession = async (id) => {
       { id },
       {},
       { upsert: true, new: true }
-    );
+    ).populate({
+      path: "users",
+      model: "User",
+    });
   } catch (e) {
     logError(e);
   }
