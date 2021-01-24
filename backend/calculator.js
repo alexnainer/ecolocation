@@ -104,6 +104,8 @@ const driver = async (id) => {
   var minCost = Number.MAX_SAFE_INTEGER;
   var bestLocIndex;
   var userTransTypes = [];
+  var bestLocationName;
+  var bestLocationType;
 
   // loop through locations and users
   for (let l = 0; l < locations.length; l++) {
@@ -136,6 +138,9 @@ const driver = async (id) => {
       minCost = cost;
       bestLocIndex = l;
       userTransTypes = tempTransTypes;
+      bestLocationName = locations[bestLocIndex].name;
+      bestLocationType = locations[bestLocIndex].locationType;
+
       console.log("minCost", minCost);
       console.log("index", bestLocIndex);
       console.log("TransTypes", userTransTypes);
@@ -152,7 +157,8 @@ const driver = async (id) => {
   }
   await Session.findOneAndUpdate({ id: id }, { "results.cost": minCost });
   await Session.findOneAndUpdate({ id: id },{ "results.geoJson": locations[bestLocIndex].geoJson });
-
+  await Session.findOneAndUpdate({ id: id },{ "results.endpoint": bestLocationName });
+  await Session.findOneAndUpdate({ id: id },{ "results.endpointType": bestLocationType });
 };
 
 module.exports = driver;

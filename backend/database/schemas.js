@@ -58,6 +58,8 @@ const sessionSchema = new Schema(
     },
     results: {
       cost: Number,
+      endpoint: String,
+      endpointType: String,
       geoJson: {
         type: String,
         coordinates: { $type: [Number] },
