@@ -52,7 +52,7 @@ const calculateDistance = (user, loc, tansportType) => {
     return result.routes[0].distance;
 }
 
-const driver = (id) => {
+const driver = async (id) => {
     session = getSession(id)
     users = session.users;
     locations = createPosibleLocationArray(session.locationPreferences.cafe, 
@@ -104,6 +104,8 @@ const driver = (id) => {
     for (let i = 0; i < session.users; i++) {
         await User.findOneAndUpdate({ _id: session.users[i]._id }, { "results.transportationType": userTransType[i] });
     }
+    await Session.findOneAndUpdate({ id: id }, { "results.cost": minCost });
+    await Session.findOneAndUpdate({ id: id }, { "results.geoJson": locations[bestLocIndex].geoJson})
 
     //search location objects for lowest cost
     return locations[bestLocIndex];

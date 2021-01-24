@@ -12,6 +12,11 @@ import SearchBar from "./SearchBar";
 
 class Sidebar extends Component {
   render() {
+    const distanceOptions = [
+        { value: '0', label: 'No Limit' },
+        { value: '1', label: '1' },
+        { value: '2', label: '2' },
+      ];
     return (
       <div className="sidebar-container">
             <div className="meeting-header">
@@ -39,7 +44,6 @@ class Sidebar extends Component {
                     <Card.Header className="people-list oddCard" >
                         <p className="personTab">Person 3</p>
                     </Card.Header>
-
                     <Card.Header className="people-list evenCard" >
                         <p className="personTab">Person 3</p>
                     </Card.Header>
@@ -224,6 +228,7 @@ class Sidebar extends Component {
                         />
                     </FormGroup>
                 </FormControl>
+
             </div>
       </div>
     );
