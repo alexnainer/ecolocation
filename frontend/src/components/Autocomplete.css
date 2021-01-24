@@ -1,0 +1,42 @@
+.AutocompletePlace {
+  position: relative;
+}
+
+.AutocompletePlace-input {
+  width: 358px;
+  height: 32px;
+  left: 31px;
+  top: 637px;
+  color: #ffffff;
+  background: #ffffff;
+  border-radius: 150px;
+  border-color: #ffffff;
+}
+
+.AutocompletePlace-input:focus {
+  border-color: #00d649;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+.AutocompletePlace-results {
+  position: absolute;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ffffff;
+}
+
+.AutocompletePlace-items {
+  list-style: none;
+  border: 1px solid #ffffff;
+  cursor: pointer;
+  padding: 10px 10px;
+}
+
+.AutocompletePlace-items:hover {
+  background-color: #0000ff11;
+}
