@@ -1,16 +1,54 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment } from "react";
 import "./Sidebar.css";
-import Card from 'react-bootstrap/Card'
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Form from 'react-bootstrap/Form'
-import Select from 'react-select';
+import Card from "react-bootstrap/Card";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import SearchBar from "./SearchBar";
-
+import PersonButton from "./Users/PersonButton";
+import AddPersonButton from "./Users/AddPersonButton";
 
 class Sidebar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentUser: {
+        preferences: {
+          carpool: false,
+          maxWalkDistance: 0,
+          maxCarDistance: 0,
+          maxBicycleDistance: 0,
+        },
+      },
+    };
+  }
+
+  handleAddPerson = () => {
+    console.log("add person", this.props);
+    this.props.addPerson(`Person ${this.props.session.users.length + 1}`);
+  };
+
+  handlePersonSelected = (user) => {
+    this.setState({ currentUser: user });
+    console.log("user", user);
+  };
+
+  async handleUpdateDistance(type, distance) {
+    await this.setState({
+      currentUser: {
+        ...this.state.currentUser,
+        preferences: {
+          ...this.state.currentUser.preferences,
+          [type]: distance,
+        },
+      },
+    });
+    this.props.updatePerson(this.state.currentUser);
+  }
+
   render() {
     return (
       <div className="sidebar-container">
