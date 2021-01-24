@@ -119,7 +119,7 @@ class MapContainer extends Component {
         createPlace(descr[i], icon[i], startingCoords[i])
       );
     }
-    numberOfSources += counter;
+    //numberOfSources += counter;
     console.log("session", session);
     console.log("session.results", session.results);
     places["features"].push(
