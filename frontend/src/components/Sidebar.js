@@ -246,7 +246,7 @@ class Sidebar extends Component {
               <option value="8">8</option>
               <option value="9">9</option>
               <option value="10">10</option>
-              <option value={Number.MAX_SAFE_INTEGER}>No Limit</option>
+              <option value={500}>No Limit</option>
             </Form.Control>
             <Form.Label
               className="my-1 mr-2 maxTravelText"
@@ -278,7 +278,7 @@ class Sidebar extends Component {
               <option value="8">8</option>
               <option value="9">9</option>
               <option value="10">10</option>
-              <option value={Number.MAX_SAFE_INTEGER}>No Limit</option>
+              <option value={500}>No Limit</option>
             </Form.Control>
             <div className="testFix">
               <Form.Label
@@ -311,7 +311,7 @@ class Sidebar extends Component {
                 <option value="80">80</option>
                 <option value="90">90</option>
                 <option value="100">100</option>
-                <option value={Number.MAX_SAFE_INTEGER}>No Limit</option>
+                <option value={500}>No Limit</option>
               </Form.Control>
             </div>
           </Form>

@@ -10,7 +10,12 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 class MapPage extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true, mapLoading: false };
+    this.state = {
+      loading: true,
+      mapLoading: false,
+      hasCalculated: false,
+      session: { results: {} },
+    };
   }
 
   async componentDidMount() {
@@ -64,7 +69,11 @@ class MapPage extends Component {
     const { sessionId } = this.props.match.params;
     await api.getCalculate(sessionId);
     const response = await api.getSession(sessionId);
-    this.setState({ mapLoading: false, session: response.data });
+    this.setState({
+      mapLoading: false,
+      session: response.data,
+      hasCalculated: true,
+    });
   };
 
   render() {
@@ -91,7 +100,11 @@ class MapPage extends Component {
             />
           </Fragment>
         )}
-        <Calculate onClick={this.handleCalculate} />
+        <Calculate
+          onClick={this.handleCalculate}
+          session={this.state.session}
+          hasCalculated={this.state.hasCalculated}
+        />
       </div>
     );
   }
