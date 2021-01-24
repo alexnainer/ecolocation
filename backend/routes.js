@@ -39,7 +39,7 @@ router.get("/session/:sessionId/calculate", async (req, res) => {
   // const { query } = req;
   const { sessionId } = req.params;
   log("Calculating for", sessionId);
-  driver(sessionId);
+  await driver(sessionId);
   // const result = await sessions.getSession(sessionId);
   res.sendStatus(200);
 });

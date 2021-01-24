@@ -8,6 +8,9 @@ class Calculate extends Component {
         <p onClick={this.props.onClick} className="textStyle">
           Calculate
         </p>
+        {/* <p className="resultContainer resultTextStyle">
+          Your meeting location is [] with a carbon cost of []
+          </p> */}
       </div>
     );
   }

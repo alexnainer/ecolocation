@@ -20,4 +20,23 @@
   text-align: center;
 }
 
+/* .resultTextStyle {
+  color: white;
+  font-family: Teko;
+  font-style: italic;
+  font-size: 40px;
+  text-align: center;
+}
+
+.resultContainer {
+  position: absolute;
+  background-color: rgba(0, 134, 11, 0.32);
+  width: 60vw !important;
+  max-height: 90px;
+  left: 300px;
+  padding-top: 5px;
+  top: 15px;
+  vertical-align: bottom;
+} */
+
 @import url(//fonts.googleapis.com/css?family=Teko);
