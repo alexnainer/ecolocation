@@ -55,6 +55,10 @@ const sessionSchema = new Schema(
     },
     results: {
       cost: Number,
+      geoJson: {
+        type: String,
+        coordinates: { $type: [Number] },
+      },
     },
   },
   { collection: "sessions" }

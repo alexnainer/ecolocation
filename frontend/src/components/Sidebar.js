@@ -7,6 +7,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Form from 'react-bootstrap/Form'
 import Select from 'react-select';
+import Card from "react-bootstrap/Card";
+import SearchBar from "./SearchBar";
 
 
 class Sidebar extends Component {
@@ -70,6 +72,7 @@ class Sidebar extends Component {
             <div className="userUnderline"></div>
             <div className="userPreferences">
                 <p className="preferenceTextHeaders">Location</p>
+                  <SearchBar />
                 <p className="preferenceTextHeaders">Method of Transportation</p>
                 <FormControl component="fieldset">
                     <FormGroup aria-label="position" row>
