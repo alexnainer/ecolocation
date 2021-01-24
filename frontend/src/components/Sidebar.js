@@ -51,19 +51,15 @@ class Sidebar extends Component {
   }
 
   handleSearchChange = async (searchString) => {
-    console.log("search change", searchString);
-    this.setState(
-      {
-        currentUser: {
-          ...this.state.currentUser,
-          location: {
-            ...this.state.currentUser.location,
-            searchString,
-          },
+    this.setState({
+      currentUser: {
+        ...this.state.currentUser,
+        location: {
+          ...this.state.currentUser.location,
+          searchString,
         },
       },
-      () => console.log("currentUser", this.state.currentUser)
-    );
+    });
   };
 
   handleLocationChange = async (location, searchString) => {

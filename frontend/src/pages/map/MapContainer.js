@@ -17,9 +17,9 @@ let randomColourArray = [
   "#E313D4",
   "#EEB9EE",
   "#A8B4FF",
-  "#365245",
-  "#527A15",
-  "#796537",
+  "#66ccff",
+  "#ffff66",
+  "#ffcc00",
 ];
 let mapBounds = [
   [-76.702106, 44.157578],
@@ -27,6 +27,7 @@ let mapBounds = [
 ];
 let centerMap = [-76.5, 44.233334];
 let map;
+let numberOfSources = 0;
 
 class MapContainer extends Component {
   constructor(props) {
@@ -38,8 +39,46 @@ class MapContainer extends Component {
 
   async componentDidUpdate() {
     console.log("didUpdate");
+
     const { session } = this.props;
     const { users } = session;
+
+    let diff = users.length - numberOfSources;
+    // if (diff > 0) {
+    //   for (let i = numberOfSources; i < diff + numberOfSources; i++) {
+    //     console.log("adding ", i);
+    //     map.addSource(`lines-route${i}`, {
+    //       type: "geojson",
+    //       data: {
+    //         type: "Feature",
+    //         properties: {},
+    //         geometry: {
+    //           type: "LineString",
+    //           coordinates: [],
+    //         },
+    //       },
+    //     });
+
+    //     map.addSource(`circles-point-origin${i}`, {
+    //       type: "geojson",
+    //       data: {
+    //         type: "FeatureCollection",
+    //         features: [
+    //           {
+    //             type: "Feature",
+    //             properties: {},
+    //             geometry: {
+    //               type: "Point",
+    //               coordinates: [],
+    //             },
+    //           },
+    //         ],
+    //       },
+    //     });
+    //   }
+    // }
+
+    // numberOfSources += diff;
 
     const calls = [];
     const startingCoords = [];
@@ -48,13 +87,18 @@ class MapContainer extends Component {
 
     let places = { type: "FeatureCollection", features: [] };
 
+    console.log("session.users.length", session.users.length);
     for (let i = 0; i < session.users.length; i++) {
-      calls.push(
-        `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
-      );
-      startingCoords.push(users[i].location.geoJson.coordinates);
-      descr.push(users[i].name);
-      icon.push(determineIconOrigin(users[i].results.transportationType));
+      if (users[i].results.transportationType) {
+        calls.push(
+          `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
+        );
+        startingCoords.push(users[i].location.geoJson.coordinates);
+        descr.push(users[i].name);
+        icon.push(determineIconOrigin(users[i].results.transportationType));
+      } else {
+        calls.push("");
+      }
     }
 
     for (let i = 0; i < session.users.length; i++) {
@@ -63,32 +107,52 @@ class MapContainer extends Component {
 
       const geojson = generateGeoJson(route);
       console.log(`lines-route${i}`);
-      map.getSource(`lines-route${i}`).setData({
-        type: "Feature",
-        properties: {},
-        geometry: {
-          type: "LineString",
-          coordinates: geojson.geometry.coordinates,
-        },
-      });
 
-      places["features"].push(
-        createPlace(descr[i], icon[i], startingCoords[i])
-      );
+      if (i >= numberOfSources) {
+        if (users[i].results.transportationType) {
+          places["features"].push(
+            createPlace(descr[i], icon[i], startingCoords[i])
+          );
 
-      map.getSource(`circles-point-origin${i}`).setData({
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Point",
-              coordinates: startingCoords[i],
-            },
+          let colour = randomColourArray[i];
+          createLines(
+            map,
+            "route" + i.toString(),
+            geojson.geometry.coordinates,
+            colour
+          );
+          createCircle(
+            map,
+            "point-origin" + i.toString(),
+            startingCoords[i],
+            colour,
+            0
+          );
+        }
+      } else {
+        map.getSource(`lines-route${i}`).setData({
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: geojson.geometry.coordinates,
           },
-        ],
-      });
+        });
+
+        map.getSource(`circles-point-origin${i}`).setData({
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "Point",
+                coordinates: startingCoords[i],
+              },
+            },
+          ],
+        });
+      }
     }
     places["features"].push(
       createPlace("Starbucks", "star", session.results.geoJson.coordinates)
@@ -102,8 +166,8 @@ class MapContainer extends Component {
       pitchWithRotate: false,
       dragRotate: false,
       zoom: 14,
-      maxZoom: 18,
-      minZoom: 12,
+      maxZoom: 16,
+      minZoom: 13,
       maxBounds: mapBounds,
       container: "map",
       style: "mapbox://styles/mapbox/navigation-guidance-night-v4",
@@ -183,7 +247,7 @@ class MapContainer extends Component {
           "point-origin" + i.toString(),
           startingCoords[i],
           colour,
-          10
+          0
         );
       }
       // Generate endpoint circle -> use sessions['result']['geoJson'].coordinates
@@ -194,9 +258,12 @@ class MapContainer extends Component {
         "#000000",
         0
       );
-      places["features"].push(
-        createPlace("Starbucks", "star", session.results.geoJson.coordinates)
-      );
+
+      if (users.length > 0) {
+        places["features"].push(
+          createPlace("Starbucks", "star", session.results.geoJson.coordinates)
+        );
+      }
       console.log(places);
       addSource(map, places);
       addLabelLayer(map);
@@ -310,6 +377,7 @@ function addLabelLayer(map) {
 }
 
 function createLines(map, id, coordinates, color) {
+  numberOfSources++;
   console.log(`lines-${id}`);
   map.addSource(`lines-${id}`, {
     type: "geojson",
