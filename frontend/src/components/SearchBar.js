@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import Autocomplete from "./Autocomplete";
 import "./SearchBar.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
-// import MapGL from "react-map-gl";
-
-// mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
-// let geocoder;
 
 class SearchBar extends Component {
   constructor(props) {
@@ -13,21 +9,20 @@ class SearchBar extends Component {
     this.state = {};
   }
 
-  async componentDidMount() {
-    // geocoder = new MapboxGeocoder({
-    //   accessToken: mapboxgl.accessToken,
-    //   mapboxgl: mapboxgl,
-    // });
-  }
-
   onSelect(place) {
-    console.log("place", place);
+    this.props.onLocationChange(place.geometry, place.place_name);
   }
 
   render() {
     return (
       <div class="searchbar">
-        <Autocomplete onSelect={(place) => this.onSelect(place)}></Autocomplete>
+        <Autocomplete
+          onSelect={(place) => this.onSelect(place)}
+          onSearchChange={(searchString) =>
+            this.props.onSearchChange(searchString)
+          }
+          searchString={this.props.searchString}
+        ></Autocomplete>
       </div>
     );
   }

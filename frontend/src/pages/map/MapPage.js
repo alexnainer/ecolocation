@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
 import api from "../../api/api";
 import { withRouter } from "react-router";
-import Calculate from "../../components/Calculate"
+import Calculate from "../../components/Calculate";
 
 class MapPage extends Component {
   constructor(props) {
@@ -38,17 +38,28 @@ class MapPage extends Component {
     await api.postUpdateUser(user);
   }
 
+  async handleUpdateSession(session) {
+    this.setState({ session });
+    await api.postUpdateSessionPreferences(
+      session.id,
+      session.locationPreferences
+    );
+  }
+
   render() {
     return (
       <div>
         <Header />
         <MapContainer />
-        <Sidebar
-          loading={this.state.loading}
-          session={this.state.session}
-          addPerson={(name) => this.handleAddPerson(name)}
-          updatePerson={(user) => this.handleUpdatePerson(user)}
-        />
+        {!this.state.loading && (
+          <Sidebar
+            loading={this.state.loading}
+            session={this.state.session}
+            addPerson={(name) => this.handleAddPerson(name)}
+            updatePerson={(user) => this.handleUpdatePerson(user)}
+            updateSession={(session) => this.handleUpdateSession(session)}
+          />
+        )}
         <Calculate />
       </div>
     );

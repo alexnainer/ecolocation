@@ -6,7 +6,6 @@ export default class Autocomplete extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: "",
       results: [],
       isLoading: false,
     };
@@ -21,9 +20,9 @@ export default class Autocomplete extends Component {
 
   handleSearchChange(e) {
     this.setState({
-      search: e.target.value,
       isLoading: true,
     });
+    this.props.onSearchChange(e.target.value);
 
     // Stop the previous setTimeout if there is one in progress
     clearTimeout(this.timeoutId);
@@ -35,7 +34,7 @@ export default class Autocomplete extends Component {
   }
 
   performSearch() {
-    if (this.state.search === "") {
+    if (this.props.searchString === "") {
       this.setState({
         results: [],
         isLoading: false,
@@ -45,7 +44,7 @@ export default class Autocomplete extends Component {
     axios
       .get(
         encodeURI(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.search}.json?access_token=${process.env.REACT_APP_MAPBOX_API_KEY}&bbox=-76.702106,44.157578,-76.285721,44.355278`
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.props.searchString}.json?access_token=${process.env.REACT_APP_MAPBOX_API_KEY}&bbox=-76.702106,44.157578,-76.285721,44.355278`
         )
       )
       .then((response) => {
@@ -58,9 +57,9 @@ export default class Autocomplete extends Component {
 
   handleItemClicked(place) {
     this.setState({
-      search: place.place_name,
       results: [],
     });
+    this.props.onSearchChange(place.place_name);
     this.props.onSelect(place);
   }
 
@@ -70,7 +69,7 @@ export default class Autocomplete extends Component {
         <input
           className="AutocompletePlace-input"
           type="text"
-          value={this.state.search}
+          value={this.props.searchString}
           onChange={this.handleSearchChange}
           placeholder="Type an address"
         />

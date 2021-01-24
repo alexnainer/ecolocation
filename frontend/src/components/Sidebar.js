@@ -22,18 +22,21 @@ class Sidebar extends Component {
           maxCarDistance: 0,
           maxBicycleDistance: 0,
         },
+        location: {
+          searchString: "",
+        },
       },
     };
   }
 
   handleAddPerson = () => {
-    console.log("add person", this.props);
+    // console.log("add person", this.props);
     this.props.addPerson(`Person ${this.props.session.users.length + 1}`);
   };
 
   handlePersonSelected = (user) => {
     this.setState({ currentUser: user });
-    console.log("user", user);
+    // console.log("user", user);
   };
 
   async handleUpdateDistance(type, distance) {
@@ -49,6 +52,48 @@ class Sidebar extends Component {
     this.props.updatePerson(this.state.currentUser);
   }
 
+  handleSearchChange = async (searchString) => {
+    console.log("search change", searchString);
+    this.setState(
+      {
+        currentUser: {
+          ...this.state.currentUser,
+          location: {
+            ...this.state.currentUser.location,
+            searchString,
+          },
+        },
+      },
+      () => console.log("currentUser", this.state.currentUser)
+    );
+  };
+
+  handleLocationChange = async (location, searchString) => {
+    await this.setState({
+      currentUser: {
+        ...this.state.currentUser,
+        location: {
+          searchString,
+          geoJson: location,
+        },
+      },
+    });
+
+    this.props.updatePerson(this.state.currentUser);
+  };
+
+  async handleUpdateSessionPreferences(type, value) {
+    // console.log("type, value", type, value);
+    const session = {
+      ...this.props.session,
+      locationPreferences: {
+        ...this.props.session.locationPreferences,
+        [type]: value,
+      },
+    };
+    this.props.updateSession(session);
+  }
+
   render() {
     const { currentUser } = this.state;
     const {
@@ -56,6 +101,16 @@ class Sidebar extends Component {
       maxBicycleDistance,
       maxCarDistance,
     } = currentUser.preferences;
+
+    const { session } = this.props;
+    const {
+      cafe,
+      outdoors,
+      government,
+      restaurant,
+      hotel,
+      publicBuilding,
+    } = session.locationPreferences;
     return (
       <div className="sidebar-container">
         <div className="meeting-header">
@@ -82,7 +137,15 @@ class Sidebar extends Component {
         <div className="userUnderline"></div>
         <div className="userPreferences">
           <p className="preferenceTextHeaders">Location</p>
-          <SearchBar />
+          <SearchBar
+            searchString={this.state.currentUser.location.searchString || ""}
+            onSearchChange={(searchString) =>
+              this.handleSearchChange(searchString)
+            }
+            onLocationChange={(location, searchString) =>
+              this.handleLocationChange(location, searchString)
+            }
+          />
           <p className="preferenceTextHeaders">Method of Transportation</p>
           <FormControl component="fieldset">
             <FormGroup aria-label="position" row>
@@ -243,6 +306,13 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={publicBuilding}
+                    onClick={(e) =>
+                      this.handleUpdateSessionPreferences(
+                        "publicBuilding",
+                        e.target.checked
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -260,6 +330,13 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={outdoors}
+                    onClick={(e) =>
+                      this.handleUpdateSessionPreferences(
+                        "outdoors",
+                        e.target.checked
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -278,6 +355,13 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={restaurant}
+                    onClick={(e) =>
+                      this.handleUpdateSessionPreferences(
+                        "restaurant",
+                        e.target.checked
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -295,6 +379,13 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={cafe}
+                    onClick={(e) =>
+                      this.handleUpdateSessionPreferences(
+                        "cafe",
+                        e.target.checked
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -312,6 +403,13 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={government}
+                    onClick={(e) =>
+                      this.handleUpdateSessionPreferences(
+                        "government",
+                        e.target.checked
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -329,6 +427,13 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={hotel}
+                    onClick={(e) =>
+                      this.handleUpdateSessionPreferences(
+                        "hotel",
+                        e.target.checked
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
