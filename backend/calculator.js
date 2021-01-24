@@ -1,10 +1,9 @@
 const { Location } = require("./database/schemas");
-const { User } = require("./database/schemas");
 const { Session } = require("./database/schemas");
 const api = require("./api");
 
 const getSession = async (id) => {
-    return await User.find({id: id})
+    return await Session.find({id: id})
 }
 
 const getLocationByType = async (type) => {
@@ -78,24 +77,24 @@ const driver = (id) => {
 
             if (distanceWalk <= users[u].walkDist) {
                 //user will walk no C02 Cost
+                //user[u].results.transportationType
             }else if (distanceBike <= users[u].bikeDist) {
                 //user will bike no C02 Cost
+                user[u].results
             }else if (distanceDrive <= users[u].driveDist) {
                 //user will drive
-                cost += distance*users[u].CO2PerKm
+                cost += distance*users[u].preferences.carType;
             }else {
                 //Not a viable location, user cannot get there
             }
-            cost += distance*users[u].CO2PerKm
         }
-        posibleLocations[l].cost = cost; 
+        if (cost < minCost) {
+            minCost = cost;
+            bestLocIndex = l;
+        }
     }
 
     //search location objects for lowest cost
-    return posibleLocations[lowestCost];
-}
-
-const storeMeetingLocation = (x, y, array) => {
-    array.push({x: x, y: y});
+    return locations[bestLocIndex];
 }
 
