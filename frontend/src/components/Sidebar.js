@@ -14,7 +14,16 @@ import AddPersonButton from "./Users/AddPersonButton";
 class Sidebar extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentUser: {
+        preferences: {
+          carpool: false,
+          maxWalkDistance: 0,
+          maxCarDistance: 0,
+          maxBicycleDistance: 0,
+        },
+      },
+    };
   }
 
   handleAddPerson = () => {
@@ -27,6 +36,19 @@ class Sidebar extends Component {
     console.log("user", user);
   };
 
+  async handleUpdateDistance(type, distance) {
+    await this.setState({
+      currentUser: {
+        ...this.state.currentUser,
+        preferences: {
+          ...this.state.currentUser.preferences,
+          [type]: distance,
+        },
+      },
+    });
+    this.props.updatePerson(this.state.currentUser);
+  }
+
   render() {
     console.log("session", this.props.session);
     const distanceOptions = [
@@ -34,7 +56,12 @@ class Sidebar extends Component {
       { value: "1", label: "1" },
       { value: "2", label: "2" },
     ];
-
+    const { currentUser } = this.state;
+    const {
+      maxWalkDistance,
+      maxBicycleDistance,
+      maxCarDistance,
+    } = currentUser.preferences;
     return (
       <div className="sidebar-container">
         <div className="meeting-header">
@@ -66,9 +93,15 @@ class Sidebar extends Component {
           <FormControl component="fieldset">
             <FormGroup aria-label="position" row>
               <FormControlLabel
-                value="walking"
                 control={
                   <Checkbox
+                    checked={maxWalkDistance > 0}
+                    onClick={() =>
+                      this.handleUpdateDistance(
+                        "maxWalkDistance",
+                        maxWalkDistance > 0 ? 0 : 1
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -79,9 +112,15 @@ class Sidebar extends Component {
                 className="checkboxText"
               />
               <FormControlLabel
-                value="walking"
                 control={
                   <Checkbox
+                    checked={maxBicycleDistance > 0}
+                    onClick={() =>
+                      this.handleUpdateDistance(
+                        "maxBicycleDistance",
+                        maxBicycleDistance > 0 ? 0 : 5
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -93,9 +132,15 @@ class Sidebar extends Component {
                 className="checkboxText"
               />
               <FormControlLabel
-                value="walking"
                 control={
                   <Checkbox
+                    checked={maxCarDistance > 0}
+                    onClick={() =>
+                      this.handleUpdateDistance(
+                        "maxCarDistance",
+                        maxCarDistance > 0 ? 0 : 50
+                      )
+                    }
                     color="primary"
                     size="small"
                     style={{ width: 25 }}
@@ -109,6 +154,7 @@ class Sidebar extends Component {
                 value="walking"
                 control={
                   <Checkbox
+                    checked={currentUser.preferences.carpool}
                     color="primary"
                     size="small"
                     style={{ width: 25 }}

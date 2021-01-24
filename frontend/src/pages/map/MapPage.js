@@ -33,6 +33,10 @@ class MapPage extends Component {
     this.setState({ loading: false, session: response.data });
   }
 
+  async handleUpdatePerson(user) {
+    await api.postUpdateUser(user);
+  }
+
   render() {
     return (
       <div>
@@ -42,6 +46,7 @@ class MapPage extends Component {
           loading={this.state.loading}
           session={this.state.session}
           addPerson={(name) => this.handleAddPerson(name)}
+          updatePerson={(user) => this.handleUpdatePerson(user)}
         />
       </div>
     );

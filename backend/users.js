@@ -30,9 +30,9 @@ const createUser = async ({ name, sessionId }) => {
   }
 };
 
-const updateUser = async ({ id, update }) => {
+const updateUser = async (user) => {
   try {
-    return await User.findOneAndUpdate({ _id: id }, update, options);
+    return await User.findOneAndUpdate({ _id: user._id }, user, options);
   } catch (e) {
     logError(e);
   }
@@ -40,4 +40,5 @@ const updateUser = async ({ id, update }) => {
 
 module.exports = {
   createUser,
+  updateUser,
 };

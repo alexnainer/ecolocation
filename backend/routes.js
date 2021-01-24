@@ -36,8 +36,8 @@ router.post("/user/new", async (req, res) => {
 });
 
 router.post("/user/:userId", async (req, res) => {
-  const { userId, body } = req;
-  const result = await users.updateUser({ userId, body });
+  const { body } = req;
+  const result = await users.updateUser(body);
   res.send(result);
 });
 
