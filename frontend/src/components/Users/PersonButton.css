@@ -21,8 +21,16 @@
   -webkit-text-stroke-color: rgba(100, 100, 100, 0.479);
 }
 
+.selected {
+  background: #d87a30 !important;
+}
+
+.personTab:hover {
+  cursor: pointer;
+}
+
 .evenCard {
-  background: #6ce478 !important;
+  background: #6ce478;
 }
 
 .oddCard {

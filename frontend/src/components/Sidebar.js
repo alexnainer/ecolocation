@@ -115,12 +115,14 @@ class Sidebar extends Component {
         </div>
         <div className="list-container">
           {!this.props.loading &&
-            this.props.session.users.map((user) => {
+            this.props.session.users.map((user, index) => {
               return (
                 <PersonButton
                   onClick={() => this.handlePersonSelected(user)}
                   name={user.name}
                   key={user._id}
+                  index={index}
+                  selected={user._id === this.state.currentUser._id}
                 />
               );
             })}
