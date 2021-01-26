@@ -1,8 +1,12 @@
 import React, { Component } from "react";
+import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 import "./MapContainer.css";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
+
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 let randomColourArray = [
