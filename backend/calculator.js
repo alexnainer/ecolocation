@@ -163,7 +163,7 @@ const driver = async (id) => {
       ) {
         //user will drive
         //cost += distanceDriving * users[u][0].preferences.carType;
-        cost += distanceDriving * 200;
+        cost += Math.floor(distanceDriving/1000 * 200);
         tempTransTypes.push("driving");
       } else {
         //Not a viable location, user cannot get there
