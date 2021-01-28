@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import MapContainer from "./MapContainer";
 import Header from "../../components/Header";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../components/Sidebar/Sidebar";
 import api from "../../api/api";
 import { withRouter } from "react-router";
 import Calculate from "../../components/Calculate";

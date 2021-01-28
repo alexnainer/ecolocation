@@ -7,9 +7,10 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Form from "react-bootstrap/Form";
 import Select from "react-select";
-import SearchBar from "./SearchBar";
-import PersonButton from "./Users/PersonButton";
-import AddPersonButton from "./Users/AddPersonButton";
+import SearchBar from "../SearchBar";
+import PersonButton from "../Users/PersonButton";
+import AddPersonButton from "../Users/AddPersonButton";
+import LocationPreferences from "./LocationPreferences";
 
 class Sidebar extends Component {
   constructor(props) {
@@ -76,7 +77,9 @@ class Sidebar extends Component {
     this.props.updatePerson(this.state.currentUser);
   };
 
-  async handleUpdateSessionPreferences(type, value) {
+  handleUpdateSessionPreferences = (type, value) => {
+    console.log("type, value", type, value);
+    console.log("this.props", this.props);
     const session = {
       ...this.props.session,
       locationPreferences: {
@@ -85,7 +88,7 @@ class Sidebar extends Component {
       },
     };
     this.props.updateSession(session);
-  }
+  };
 
   render() {
     const { currentUser } = this.state;
@@ -316,164 +319,10 @@ class Sidebar extends Component {
             </div>
           </Form>
         </div>
-
-        {/* LOCATION PREFERENCES */}
-        <div className="locationPreferencesHeader">
-          <p className="preferenceText">Location Preferences</p>
-        </div>
-        <div className="locationUnderline"></div>
-        <div className="locationPreferences">
-          <FormControl component="fieldset">
-            <FormGroup aria-label="position" row>
-              <FormControlLabel
-                value="walking"
-                control={
-                  <Checkbox
-                    checked={publicBuilding}
-                    onClick={(e) =>
-                      this.handleUpdateSessionPreferences(
-                        "publicBuilding",
-                        e.target.checked
-                      )
-                    }
-                    color="primary"
-                    size="small"
-                    style={{ width: 25 }}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
-                    {"Public Buildings"}
-                  </span>
-                }
-                labelPlacement="start"
-                className="locationCheckboxText"
-              />
-              <FormControlLabel
-                value="walking"
-                control={
-                  <Checkbox
-                    checked={restaurant}
-                    onClick={(e) =>
-                      this.handleUpdateSessionPreferences(
-                        "restaurant",
-                        e.target.checked
-                      )
-                    }
-                    color="primary"
-                    size="small"
-                    style={{ width: 25 }}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
-                    {"Restaurants"}
-                  </span>
-                }
-                labelPlacement="start"
-                className="locationCheckboxText"
-              />
-              <FormControlLabel
-                value="walking"
-                control={
-                  <Checkbox
-                    checked={outdoors}
-                    onClick={(e) =>
-                      this.handleUpdateSessionPreferences(
-                        "outdoors",
-                        e.target.checked
-                      )
-                    }
-                    color="primary"
-                    size="small"
-                    style={{ width: 25 }}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
-                    {"Outdoors"}
-                  </span>
-                }
-                width="1px"
-                labelPlacement="start"
-                className="locationCheckboxText"
-              />
-
-              <FormControlLabel
-                value="walking"
-                control={
-                  <Checkbox
-                    checked={cafe}
-                    onClick={(e) =>
-                      this.handleUpdateSessionPreferences(
-                        "cafe",
-                        e.target.checked
-                      )
-                    }
-                    color="primary"
-                    size="small"
-                    style={{ width: 25 }}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
-                    {"Café"}
-                  </span>
-                }
-                labelPlacement="start"
-                className="locationCheckboxText"
-              />
-              <FormControlLabel
-                value="walking"
-                control={
-                  <Checkbox
-                    checked={government}
-                    onClick={(e) =>
-                      this.handleUpdateSessionPreferences(
-                        "government",
-                        e.target.checked
-                      )
-                    }
-                    color="primary"
-                    size="small"
-                    style={{ width: 25 }}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
-                    {"Gov. Buildings"}
-                  </span>
-                }
-                labelPlacement="start"
-                className="locationCheckboxText"
-              />
-              <FormControlLabel
-                value="walking"
-                control={
-                  <Checkbox
-                    checked={hotel}
-                    onClick={(e) =>
-                      this.handleUpdateSessionPreferences(
-                        "hotel",
-                        e.target.checked
-                      )
-                    }
-                    color="primary"
-                    size="small"
-                    style={{ width: 25 }}
-                  />
-                }
-                label={
-                  <span style={{ fontSize: "30px", fontFamily: "Teko" }}>
-                    {"Hotel"}
-                  </span>
-                }
-                labelPlacement="start"
-                className="locationCheckboxText"
-              />
-            </FormGroup>
-          </FormControl>
-        </div>
+        <LocationPreferences
+          session={this.props.session}
+          handleUpdateSessionPreferences={this.handleUpdateSessionPreferences}
+        />
       </div>
     );
   }
