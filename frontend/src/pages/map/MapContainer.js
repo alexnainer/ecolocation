@@ -37,7 +37,7 @@ class MapContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      loading: this.props.loading,
     };
   }
 
@@ -85,8 +85,6 @@ class MapContainer extends Component {
         },
       });
 
-
-
       places["features"].push(
         createPlace(descr[i], icon[i], startingCoords[i])
       );
@@ -97,7 +95,7 @@ class MapContainer extends Component {
         type: "geojson",
         type: "Feature",
         properties: {
-          "color": randomColourArray[i],
+          color: randomColourArray[i],
         },
         geometry: {
           type: "LineString",
@@ -216,11 +214,10 @@ class MapContainer extends Component {
       createCirclesSource(circleData);
       createCirclesLayer(map, "circles", circleData, 10, "#133CE3");
 
-      
       var lineData = { type: "FeatureCollection", features: [] };
       createLinesSource(map, lineData);
       createLineLayer(map, "wohoo", "#ffcc00");
-      
+
       var places = { type: "FeatureCollection", features: [] };
       addSource(map, places);
       addLabelLayer(map);
@@ -258,7 +255,7 @@ class MapContainer extends Component {
           type: "geojson",
           type: "Feature",
           properties: {
-            "color": colour,
+            color: colour,
           },
           geometry: {
             type: "LineString",
@@ -497,7 +494,7 @@ function createLineLayer(map, id, color) {
       "line-cap": "round",
     },
     paint: {
-      "line-color": ['get', 'color'],
+      "line-color": ["get", "color"],
       "line-width": 5,
       "line-opacity": 1.0,
     },
