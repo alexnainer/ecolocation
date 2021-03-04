@@ -147,6 +147,28 @@ async function addMapLayers(session, calls, startingCoords, descriptions, icons)
   map.getSource("circlesData").setData(circleData);
   map.getSource("places").setData(places);
   map.getSource("lines").setData(lineData);
+  createMarkerPopup(places);
+}
+
+function createMarkerPopup(data) {
+  data.features.forEach(function (marker) {
+    if (marker.geometry.coordinates.length) {
+      // create a HTML element for each feature
+      var el = document.createElement("div");
+      el.className = "marker";
+      console.log("COORDIANTES: ", marker.geometry.coordinates)
+      
+      // make a marker for each feature and add to the map
+      new mapboxgl.Marker(el)
+        .setLngLat({lng: marker.geometry.coordinates[0], lat: marker.geometry.coordinates[1]})
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }) // add popups
+            .setHTML("<h5>" + marker.properties.description + "</h5><p>" + "Transport Type: " + marker.properties.icon + "</p>")
+        )
+        .addTo(map);
+    }
+      
+  });
 }
 
 function determineIconOrigin(transportType) {
