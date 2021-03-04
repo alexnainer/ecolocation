@@ -1,39 +1,50 @@
 .people-list {
-  margin: 0 auto;
-  margin-top: 8px !important;
-  width: 92%;
-  min-height: 10%;
-  background: #00d649 !important;
-  box-shadow: 0px 1px 0px #6a6a6a !important;
-  border-radius: 16px !important;
+    margin: 0 auto;
+    margin-top: 8px !important;
+    width: 92%;
+    min-height: 10%;
+    background: #00d649 !important;
+    box-shadow: 0px 1px 0px #6a6a6a !important;
+    border-radius: 16px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pencil-button {
+    display: none;
 }
 
 .personTab {
-  text-align: left;
-  margin-top: -5px;
-  margin-bottom: -12px;
-  letter-spacing: 0.03em;
-  font-family: Teko;
-  font-style: normal;
-  font-size: 27px;
-  color: #006115;
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: rgba(100, 100, 100, 0.479);
+    text-align: left;
+    margin-top: -5px;
+    margin-bottom: -12px;
+    letter-spacing: 0.03em;
+    font-family: Teko;
+    font-style: normal;
+    font-size: 27px;
+    color: #006115;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: rgba(100, 100, 100, 0.479);
 }
 
 .selected {
-  border: 3px solid rgb(231, 177, 0) !important;
-  background: rgb(243, 215, 59) !important;
+    border: 3px solid rgb(231, 177, 0) !important;
+    background: rgb(243, 215, 59) !important;
 }
 
-.personTab:hover {
-  cursor: pointer;
+.people-list:hover {
+    cursor: pointer;
+}
+
+.people-list:hover > .pencil-button {
+    display: block;
 }
 
 .evenCard {
-  background: #6CE478 !important;
+    background: #6ce478 !important;
 }
 
 .oddCard {
-  background: #6BBF82 !important;
+    background: #6bbf82 !important;
 }
