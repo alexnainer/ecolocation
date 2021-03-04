@@ -49,14 +49,11 @@ class MapContainer extends Component {
     const { session } = this.props;
     const { users } = session;
 
-    const calls = [];
-    const startingCoords = [];
-    const descriptions = [];
-    const icons = [];
+    let mapInformation = createMapInformation();
 
-    initializeApiArrays(users, session, calls, startingCoords, descriptions, icons);
+    initializeApiArrays(users, session, mapInformation);
 
-    addMapLayers(session, calls, startingCoords, descriptions, icons);
+    addMapLayers(session, mapInformation);
   }
 
   async componentDidMount() {
@@ -80,10 +77,7 @@ class MapContainer extends Component {
 
       map.resize();
 
-      const calls = [];
-      const startingCoords = [];
-      const descriptions = [];
-      const icons = [];
+      let mapInformation = createMapInformation();
 
       shuffleArray(randomColourArray);
 
@@ -96,9 +90,9 @@ class MapContainer extends Component {
       createPlacesSource();
       addLabelLayer();
 
-      initializeApiArrays(users, session, calls, startingCoords, descriptions, icons);
+      initializeApiArrays(users, session, mapInformation);
 
-      addMapLayers(session, calls, startingCoords, descriptions, icons);
+      addMapLayers(session, mapInformation);
     });
   }
 
@@ -120,34 +114,39 @@ class MapContainer extends Component {
   }
 }
 
-async function addMapLayers(session, calls, startingCoords, descriptions, icons) {
-  let places = { type: "FeatureCollection", features: [] };
-  let circleData = { type: "FeatureCollection", features: [] };
-  let lineData = { type: "FeatureCollection", features: [] };
+async function addMapLayers(session, mapInformation) {
+  mapInformation.places = { type: "FeatureCollection", features: [] };
+  mapInformation.circleData = { type: "FeatureCollection", features: [] };
+  mapInformation.lineData = { type: "FeatureCollection", features: [] };
 
-  for (let i = 0; i < calls.length; i++) {
-    var colour = randomColourArray[i % calls.length];
-    const result = await axios.get(calls[i]);
+  for (let i = 0; i < mapInformation["calls"].length; i++) {
+    var colour = randomColourArray[i % mapInformation["calls"].length];
+    const result = await axios.get(mapInformation["calls"][i]);
     const route = result.data.routes[0].geometry.coordinates;
-
-    circleData.features.push(createCircle(startingCoords[i], colour));
-    places.features.push(createPlace(descriptions[i], icons[i], startingCoords[i]));
-    lineData.features.push(createLine(route, colour));
+    mapInformation["places"].features.push(
+      createPlace(
+        mapInformation["descriptions"][i],
+        mapInformation["icons"][i],
+        mapInformation["startingCoords"][i]
+      )
+    );
+    mapInformation["circleData"].features.push(createCircle(mapInformation["startingCoords"][i], colour));
+    mapInformation["lineData"].features.push(createLine(route, colour));
   }
 
-  places["features"].push(
+  mapInformation["places"].features.push(
     createPlace(
       session.results.endpoint,
       determineIconEndPoint(session.results.endpointType),
       session.results.geoJson.coordinates
     )
   );
-  circleData.features.push(createCircle(session.results.geoJson.coordinates, "#000000"));
+  mapInformation["circleData"].features.push(createCircle(session.results.geoJson.coordinates, "#000000"));
 
-  map.getSource("circlesData").setData(circleData);
-  map.getSource("places").setData(places);
-  map.getSource("lines").setData(lineData);
-  createMarkerPopup(places);
+  map.getSource("circlesData").setData(mapInformation["circleData"]);
+  map.getSource("places").setData(mapInformation["places"]);
+  map.getSource("lines").setData(mapInformation["lineData"]);
+  createMarkerPopup(mapInformation["places"]);
 }
 
 function createMarkerPopup(data) {
@@ -156,19 +155,34 @@ function createMarkerPopup(data) {
       // create a HTML element for each feature
       var el = document.createElement("div");
       el.className = "marker";
-      console.log("COORDIANTES: ", marker.geometry.coordinates)
-      
+      console.log("COORDIANTES: ", marker.geometry.coordinates);
+
       // make a marker for each feature and add to the map
       new mapboxgl.Marker(el)
-        .setLngLat({lng: marker.geometry.coordinates[0], lat: marker.geometry.coordinates[1]})
+        .setLngLat({ lng: marker.geometry.coordinates[0], lat: marker.geometry.coordinates[1] })
         .setPopup(
           new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML("<h5>" + marker.properties.description + "</h5><p>" + "Transport Type: " + marker.properties.icon + "</p>")
+            .setHTML(
+              "<h5>" +
+                marker.properties.description +
+                "</h5><p>" +
+                "Transport Type: " +
+                marker.properties.icon +
+                "</p>"
+            )
         )
         .addTo(map);
     }
-      
   });
+}
+
+function createMapInformation() {
+      let mapInformation = {};
+      mapInformation.startingCoords = [];
+      mapInformation.calls = [];
+      mapInformation.descriptions = [];
+      mapInformation.icons = [];
+      return mapInformation
 }
 
 function determineIconOrigin(transportType) {
@@ -199,17 +213,17 @@ function determineIconEndPoint(ept) {
   }
 }
 
-function initializeApiArrays(users, session, calls, startingCoords, descriptions, icons) {
+function initializeApiArrays(users, session, mapInformation) {
   for (let i = 0; i < session.users.length; i++) {
     if (users[i].results.transportationType) {
-      calls.push(
+      mapInformation.calls.push(
         `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
       );
-      startingCoords.push(users[i].location.geoJson.coordinates);
-      descriptions.push(users[i].name);
-      icons.push(determineIconOrigin(users[i].results.transportationType));
+      mapInformation.startingCoords.push(users[i].location.geoJson.coordinates);
+      mapInformation.descriptions.push(users[i].name);
+      mapInformation.icons.push(determineIconOrigin(users[i].results.transportationType));
     } else {
-      calls.push("");
+      mapInformation.calls.push("");
     }
   }
 }
