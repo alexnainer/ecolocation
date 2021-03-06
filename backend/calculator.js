@@ -189,6 +189,8 @@ const driver = async (id) => {
     }
   }
 
+  const promises = [];
+
   for (let i = 0; i < session.users.length; i++) {
     const result = await calculateDistanceFull(
       users[i][0].location.geoJson.coordinates,
@@ -205,6 +207,8 @@ const driver = async (id) => {
         "results.transportationType": userTransTypes[i],
       }
     );
+
+    promises.push(userPromise);
   }
 
   const sessionPromise = Session.findOneAndUpdate(
@@ -217,7 +221,9 @@ const driver = async (id) => {
     }
   );
 
-  Promise.all(userPromise, sessionPromise);
+  promises.push(sessionPromise);
+
+  await Promise.all(promises);
 };
 
 module.exports = driver;
