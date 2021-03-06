@@ -10,6 +10,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import { Alert } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import Manifest from "../../components/manifest";
 
 class MapPage extends Component {
   constructor(props) {
@@ -129,6 +130,10 @@ class MapPage extends Component {
         )}
         <Calculate
           onClick={this.handleCalculate}
+          session={this.state.session}
+          hasCalculated={this.state.hasCalculated}
+        />
+        <Manifest
           session={this.state.session}
           hasCalculated={this.state.hasCalculated}
         />

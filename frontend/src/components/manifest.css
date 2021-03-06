@@ -1,0 +1,31 @@
+.manifestContainer {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 400px;
+    height: 400px;
+    left: 20.1%;
+    top: 45%;
+    vertical-align: bottom;
+  }
+  
+  .calculateContainer:hover {
+    cursor: pointer;
+  }
+  
+  .textStyleTitle {
+    color: white;
+    font-family: Teko;
+    font-style: italic;
+    font-size: 55px;
+    text-align: center;
+  }
+
+  .textStyleCont {
+    color: white;
+    font-family: Teko;
+    font-style: italic;
+    font-size: 40px;
+    text-align: center;
+  }
+  
+  @import url(//fonts.googleapis.com/css?family=Teko);
