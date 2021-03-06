@@ -20,9 +20,12 @@ const locationSchema = new Schema(
 const userSchema = new Schema(
   {
     name: String,
-    geoJson: {
-      type: String,
-      coordinates: [Number],
+    location: {
+      geoJson: {
+        type: String,
+        coordinates: [Number],
+      },
+      searchString: { $type: String, default: "" },
     },
     preferences: {
       carType: String,
@@ -32,8 +35,8 @@ const userSchema = new Schema(
       maxBicycleDistance: Number,
     },
     results: {
-      distance: Number,
-      duration: Number,
+      distanceMetres: Number,
+      durationSeconds: Number,
       transportationType: String,
       routes: [{}],
     },
@@ -51,10 +54,12 @@ const sessionSchema = new Schema(
       government: Boolean,
       restaurant: Boolean,
       hotel: Boolean,
-      public: Boolean,
+      publicBuilding: Boolean,
     },
     results: {
       cost: Number,
+      endpoint: String,
+      endpointType: String,
       geoJson: {
         type: String,
         coordinates: { $type: [Number] },

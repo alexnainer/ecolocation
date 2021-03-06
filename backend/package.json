@@ -17,7 +17,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "@powershell -Command $env:DEBUG='*'; node server.js"
+    "start": "@powershell -Command $env:DEBUG='server'; node server.js",
+    "start-prod": "DEBUG=* node server.js"
   },
   "author": "",
   "license": "ISC"

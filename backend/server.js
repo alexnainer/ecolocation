@@ -3,13 +3,15 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const app = express();
-const port = 3001;
 
 const log = require("debug")("server");
 const logError = require("debug")("server:error");
 
 require("dotenv").config();
 const cors = require("cors");
+
+const host = process.env.HOST;
+const port = process.env.PORT;
 
 (async () => {
   try {
@@ -38,7 +40,7 @@ const cors = require("cors");
     log(`Successfully connected to MongoDB server ${mongoIP}:${mongoPort}`);
 
     app.listen(port, () => {
-      log(`Backend listening at http://localhost:${port}`);
+      log(`Backend listening at http://${host}:${port}`);
     });
 
     mongoose.connection.on("error", (error) => {

@@ -13,6 +13,10 @@ const api = {
     return axios.get(`/session/${id}`);
   },
 
+  postUpdateSessionPreferences(sessionId, preferences) {
+    return axios.post(`/session/${sessionId}/preferences`, preferences);
+  },
+
   postNewUser({ name, sessionId }) {
     console.log("name", name);
     return axios.post(`/user/new`, { name, sessionId });
@@ -20,6 +24,10 @@ const api = {
 
   postUpdateUser(user) {
     return axios.post(`/user/${user._id}`, user);
+  },
+
+  getCalculate(id) {
+    return axios.get(`/session/${id}/calculate`);
   },
 };
 

@@ -1,0 +1,35 @@
+.addCard {
+  position: relative;
+  margin: 0 auto;
+  margin-top: 8px !important;
+  width: 100%;
+  min-height: 10%;
+  left: 0;
+  background: #00d649 !important;
+  box-shadow: 0px 1px 0px #6a6a6a !important;
+  border-radius: 16px !important;
+}
+
+.addPerson {
+  margin-top: 18%;
+  width: 78%;
+}
+
+.addPerson:hover {
+  cursor: pointer;
+}
+
+.addToList {
+  text-align: center;
+  margin-top: -5px;
+  margin-bottom: -12px;
+  letter-spacing: 0.03em;
+  font-family: Teko;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 24px;
+  color: #ffffff;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgba(0, 255, 21, 0.192);
+  text-shadow: 0px 2px 2px rgb(38, 134, 0);
+}

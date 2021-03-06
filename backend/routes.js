@@ -6,6 +6,9 @@ const sessions = require("./sessions");
 const users = require("./users");
 const driver = require("./calculator");
 
+const log = require("debug")("routes");
+const logError = require("debug")("routes:error");
+
 router.get("/session/new", async (req, res) => {
   const result = await sessions.getSession();
 
@@ -17,16 +20,28 @@ router.get("/session/:sessionId", async (req, res) => {
   const { sessionId } = req.params;
 
   const result = await sessions.getSession(sessionId);
-  console.log("result", result);
+  //console.log("result", result);
+  res.send(result);
+});
+
+router.post("/session/:sessionId/preferences", async (req, res) => {
+  const { query } = req;
+  const { body } = req;
+  const { sessionId } = req.params;
+
+  const result = await sessions.updateSessionPreferences(sessionId, body);
+  console.log("result prefs", result);
+
   res.send(result);
 });
 
 router.get("/session/:sessionId/calculate", async (req, res) => {
   // const { query } = req;
   const { sessionId } = req.params;
-  driver(sessionId);
-  const result = await sessions.getSession(sessionId);
-  res.send(result);
+  log("Calculating for", sessionId);
+  await driver(sessionId);
+  // const result = await sessions.getSession(sessionId);
+  res.sendStatus(200);
 });
 
 router.post("/user/new", async (req, res) => {
