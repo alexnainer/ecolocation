@@ -151,6 +151,7 @@ async function addMapLayers(
 
   for (let i = 0; i < calls.length; i++) {
     var colour = randomColourArray[i % calls.length];
+    if (!calls[i]) continue;
     const result = await axios.get(calls[i]);
     const route = result.data.routes[0].geometry.coordinates;
 

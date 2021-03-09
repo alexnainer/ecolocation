@@ -70,7 +70,7 @@ class UserPreferences extends Component {
                     <Checkbox
                       checked={maxWalkDistance > 0}
                       onClick={() =>
-                        this.handleUpdateDistance(
+                        this.props.updateTransportation(
                           "maxWalkDistance",
                           maxWalkDistance > 0 ? 0 : 1
                         )
@@ -90,7 +90,7 @@ class UserPreferences extends Component {
                     <Checkbox
                       checked={maxBicycleDistance > 0}
                       onClick={() =>
-                        this.handleUpdateDistance(
+                        this.props.updateTransportation(
                           "maxBicycleDistance",
                           maxBicycleDistance > 0 ? 0 : 5
                         )
@@ -111,7 +111,7 @@ class UserPreferences extends Component {
                     <Checkbox
                       checked={maxCarDistance > 0}
                       onClick={() =>
-                        this.handleUpdateDistance(
+                        this.props.updateTransportation(
                           "maxCarDistance",
                           maxCarDistance > 0 ? 0 : 50
                         )
@@ -149,7 +149,7 @@ class UserPreferences extends Component {
                 custom
                 value={maxWalkDistance}
                 onChange={(e) =>
-                  this.handleUpdateDistance(
+                  this.props.updateTransportation(
                     "maxWalkDistance",
                     parseInt(e.target.value)
                   )
@@ -181,7 +181,7 @@ class UserPreferences extends Component {
                 custom
                 value={maxBicycleDistance}
                 onChange={(e) =>
-                  this.handleUpdateDistance(
+                  this.props.updateTransportation(
                     "maxBicycleDistance",
                     parseInt(e.target.value)
                   )
@@ -214,7 +214,7 @@ class UserPreferences extends Component {
                   custom
                   value={maxCarDistance}
                   onChange={(e) =>
-                    this.handleUpdateDistance(
+                    this.props.updateTransportation(
                       "maxCarDistance",
                       parseInt(e.target.value)
                     )

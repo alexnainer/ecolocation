@@ -31,10 +31,12 @@ class Sidebar extends Component {
 
   handlePersonSelected = (index) => {
     // this.setState({ currentUser: user });
+    const { currentUserIndex } = this.state;
+    const sameIndexSelected = currentUserIndex === index;
     this.setState({
-      currentUserIndex: index,
-      showUserPreferences: true,
-      showLocationPreferences: true,
+      currentUserIndex: sameIndexSelected ? -1 : index,
+      showUserPreferences: !sameIndexSelected,
+      showLocationPreferences: !sameIndexSelected,
     });
   };
 
@@ -44,19 +46,19 @@ class Sidebar extends Component {
     });
   };
 
-  async handleUpdateDistance(type, distance) {
+  handleUpdateTransportation = (type, distance) => {
     const { currentUserIndex } = this.state;
-    const { currentUser } = this.props.session.users[currentUserIndex];
+    const currentUser = this.props.session.users[currentUserIndex];
     const user = {
       ...currentUser,
       preferences: {
-        ...currentUser,
+        ...currentUser.preferences,
         [type]: distance,
       },
     };
 
     this.props.updatePerson(user);
-  }
+  };
 
   handlePersonNameChange = async (name, index) => {
     const user = {
@@ -80,17 +82,17 @@ class Sidebar extends Component {
   };
 
   handleLocationChange = async (location, searchString) => {
-    await this.setState({
-      currentUser: {
-        ...this.state.currentUser,
-        location: {
-          searchString,
-          geoJson: location,
-        },
+    const { currentUserIndex } = this.state;
+    const currentUser = this.props.session.users[currentUserIndex];
+    const user = {
+      ...currentUser,
+      location: {
+        searchString,
+        geoJson: location,
       },
-    });
+    };
 
-    this.props.updatePerson(this.state.currentUser);
+    this.props.updatePerson(user);
   };
 
   async handleUpdateSessionPreferences(type, value) {
@@ -155,7 +157,7 @@ class Sidebar extends Component {
             show={showUserPreferences && !!currentUser}
             setShow={this.setShowUserPreferences}
             currentUser={currentUser}
-            handleUpdateDistance={this.handleUpdateDistance}
+            updateTransportation={this.handleUpdateTransportation}
             handleLocationChange={this.handleLocationChange}
             handleSearchChange={this.handleSearchChange}
           />

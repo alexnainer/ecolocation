@@ -67,7 +67,6 @@ class MapPage extends Component {
 
   isFieldsValid = () => {
     for (const user of this.state.session.users) {
-      console.log("user", user);
       if (!user.location?.geoJson?.coordinates?.length) return false;
 
       const {
