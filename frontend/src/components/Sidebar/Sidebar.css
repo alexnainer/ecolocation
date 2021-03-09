@@ -13,16 +13,6 @@
   box-shadow: 3px 0px 4px rgba(0, 0, 0, 0.2);
 }
 
-.meeting-container {
-  display: flex;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  margin-top: 80px;
-}
-
 .meeting-header {
   position: relative;
   padding-top: 5px;
@@ -30,7 +20,15 @@
   width: 100%;
   height: 9%;
   left: 0;
-  top: 8%;
+}
+
+.meeting-container {
+  margin-top: 80px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .list-container {
@@ -42,7 +40,7 @@
   top: 7.5%;
   width: 90%;
   min-height: 30%;
-  /* max-height: 30%; */
+  max-height: 30%;
   background: #f9f9f9;
   box-shadow: inset 0px 0px 12px -3px #000000;
   border-radius: 22px;
@@ -68,6 +66,11 @@
   background: #00d649 !important;
   box-shadow: 0px 1px 0px #6a6a6a !important;
   border-radius: 16px !important;
+}
+
+.addPerson {
+  margin-top: 18%;
+  width: 78%;
 }
 
 .evenCard {
@@ -118,52 +121,6 @@
   text-align: center;
 
   text-shadow: 0px 3px 0px #f3f3f3, 0px 5px 1px #8080804b;
-}
-
-.preferences-container {
-  width: 100%;
-}
-
-.user-preferences-container {
-  width: 100%;
-}
-
-.userPreferencesHeader {
-  background-color: #728196;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.26);
-  width: 100%;
-  height: 30px;
-  margin-top: 6%;
-  display: flex;
-  justify-content: center;
-}
-
-.collapse-container {
-  width: 100%;
-}
-
-button:focus {
-  outline: none !important;
-}
-
-.header-arrow {
-  color: white;
-}
-
-.userUnderline {
-  background: #576a84;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.26);
-  width: 100%;
-  min-height: 4px;
-}
-.userPreferences {
-  background: #d0d8e6;
-  width: 100%;
-  /* height: 28%; */
-}
-
-.location-preferences-container {
-  width: 100%;
 }
 
 .locationPreferencesHeader {

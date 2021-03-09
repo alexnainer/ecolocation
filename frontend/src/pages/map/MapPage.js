@@ -35,7 +35,6 @@ class MapPage extends Component {
   async handleAddPerson(name) {
     const { sessionId } = this.props.match.params;
 
-    // this.setState({ loading: true });
     await api.postNewUser({ name, sessionId });
     const response = await api.getSession(sessionId);
     this.setState({ session: response.data });
@@ -43,8 +42,6 @@ class MapPage extends Component {
 
   async handleUpdatePerson(user) {
     const { sessionId } = this.props.match.params;
-    // this.setState({ loading: true });
-    await api.postUpdateUser(user);
 
     const { users } = this.state.session;
     const index = users.findIndex((usr) => usr._id == user._id);
@@ -55,6 +52,7 @@ class MapPage extends Component {
         users,
       },
     });
+    api.postUpdateUser(user);
   }
 
   async handleUpdateSession(session) {
