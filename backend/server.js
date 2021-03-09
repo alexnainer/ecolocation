@@ -1,14 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
+const cookieParser = require("cookie-parser");
 const app = express();
-
 const log = require("debug")("server");
 const logError = require("debug")("server:error");
+const cors = require("cors");
 
 require("dotenv").config();
-const cors = require("cors");
 
 const host = process.env.HOST;
 const port = process.env.PORT;
@@ -17,6 +16,7 @@ const port = process.env.PORT;
   try {
     app.use(cors());
     app.options("*", cors());
+    app.use(cookieParser());
 
     const router = require("./routes");
 

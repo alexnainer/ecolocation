@@ -1,15 +1,12 @@
 import React, { Component, Fragment } from "react";
 import MapContainer from "./MapContainer";
 import Header from "../../components/Header";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../components/Sidebar/Sidebar";
 import api from "../../api/api";
 import { withRouter } from "react-router";
 import Calculate from "../../components/Calculate";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Snackbar from "@material-ui/core/Snackbar";
-import { Alert } from "@material-ui/lab";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
+import SnackbarAlert from "../../components/SnackbarAlert";
 
 class MapPage extends Component {
   constructor(props) {
@@ -40,7 +37,6 @@ class MapPage extends Component {
   async handleAddPerson(name) {
     const { sessionId } = this.props.match.params;
 
-    // this.setState({ loading: true });
     await api.postNewUser({ name, sessionId });
     const response = await api.getSession(sessionId);
     this.setState({ session: response.data });
@@ -48,8 +44,6 @@ class MapPage extends Component {
 
   async handleUpdatePerson(user) {
     const { sessionId } = this.props.match.params;
-    // this.setState({ loading: true });
-    await api.postUpdateUser(user);
 
     const { users } = this.state.session;
     const index = users.findIndex((usr) => usr._id == user._id);
@@ -60,6 +54,7 @@ class MapPage extends Component {
         users,
       },
     });
+    api.postUpdateUser(user);
   }
 
   async handleUpdateSession(session) {
@@ -72,7 +67,6 @@ class MapPage extends Component {
 
   isFieldsValid = () => {
     for (const user of this.state.session.users) {
-      console.log("user", user);
       if (!user.location?.geoJson?.coordinates?.length) return false;
 
       const {
@@ -87,8 +81,28 @@ class MapPage extends Component {
     return true;
   };
 
+  isLocationPreferencesValid = () => {
+    const {
+      cafe,
+      outdoors,
+      government,
+      restaurant,
+      hotel,
+      publicBuilding,
+    } = this.state.session.locationPreferences;
+    return (
+      cafe || outdoors || government || restaurant || hotel || publicBuilding
+    );
+  };
+
   handleCalculate = async () => {
-    if (this.isFieldsValid()) {
+    if (!this.state.session.users.length) {
+      this.setState({ missingUsersError: true });
+    } else if (!this.isFieldsValid()) {
+      this.setState({ validFieldsError: true });
+    } else if (!this.isLocationPreferencesValid()) {
+      this.setState({ locationPreferencesError: true });
+    } else {
       this.setState({ mapLoading: true });
       const { sessionId } = this.props.match.params;
       await api.getCalculate(sessionId);
@@ -98,8 +112,6 @@ class MapPage extends Component {
         session: response.data,
         hasCalculated: true,
       });
-    } else {
-      this.setState({ validFieldsError: true });
     }
   };
 
@@ -132,26 +144,24 @@ class MapPage extends Component {
           session={this.state.session}
           hasCalculated={this.state.hasCalculated}
         />
-        <Snackbar
+        <SnackbarAlert
           open={this.state.validFieldsError}
           onClose={() => this.setState({ validFieldsError: false })}
-        >
-          <Alert
-            severity="error"
-            variant="filled"
-            action={
-              <IconButton
-                size="small"
-                color="inherit"
-                onClick={() => this.setState({ validFieldsError: false })}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            }
-          >
-            Missing user fields
-          </Alert>
-        </Snackbar>
+          severity="error"
+          message="Missing user fields"
+        />
+        <SnackbarAlert
+          open={this.state.missingUsersError}
+          onClose={() => this.setState({ missingUsersError: false })}
+          severity="error"
+          message="At least 1 user is required"
+        />
+        <SnackbarAlert
+          open={this.state.locationPreferencesError}
+          onClose={() => this.setState({ locationPreferencesError: false })}
+          severity="error"
+          message="At least 1 location preference is required"
+        />
       </div>
     );
   }
