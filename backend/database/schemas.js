@@ -35,8 +35,8 @@ const userSchema = new Schema(
       maxBicycleDistance: Number,
     },
     results: {
-      distance: Number,
-      duration: Number,
+      distanceMetres: Number,
+      durationSeconds: Number,
       transportationType: String,
       routes: [{}],
     },

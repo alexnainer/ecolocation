@@ -16,6 +16,8 @@ class MapPage extends Component {
       mapLoading: false,
       hasCalculated: false,
       session: { results: {} },
+      validFieldsError: false,
+      missingUsersError: false,
     };
   }
 

@@ -1,6 +1,9 @@
 const { Location, Session, User } = require("./database/schemas");
 const api = require("./api");
 
+const log = require("debug")("server");
+const logError = require("debug")("server:error");
+
 const getSession = (id) => {
   return Session.findOne({ id: id });
 };
@@ -163,7 +166,7 @@ const driver = async (id) => {
       ) {
         //user will drive
         //cost += distanceDriving * users[u][0].preferences.carType;
-        cost += Math.floor(distanceDriving/1000 * 200);
+        cost += Math.floor((distanceDriving / 1000) * 200);
         tempTransTypes.push("driving");
       } else {
         //Not a viable location, user cannot get there
@@ -186,35 +189,41 @@ const driver = async (id) => {
     }
   }
 
+  const promises = [];
+
   for (let i = 0; i < session.users.length; i++) {
-    await User.findOneAndUpdate(
-      { _id: session.users[i]._id },
-      { "results.transportationType": userTransTypes[i] }
-    );
-    //console.log("BoogMEOnce", users[i][0].location);
-    var result = calculateDistanceFull(
+    const result = await calculateDistanceFull(
       users[i][0].location.geoJson.coordinates,
       locations[bestLocIndex].geoJson.coordinates,
       userTransTypes[i]
     );
-    await User.findOneAndUpdate(
+
+    const userPromise = User.findOneAndUpdate(
       { _id: session.users[i]._id },
-      { "results.routes": result }
+      {
+        "results.routes": result,
+        "results.distanceMetres": result.routes[0].distance,
+        "results.durationSeconds": result.routes[0].duration,
+        "results.transportationType": userTransTypes[i],
+      }
     );
+
+    promises.push(userPromise);
   }
-  await Session.findOneAndUpdate({ id: id }, { "results.cost": minCost });
-  await Session.findOneAndUpdate(
-    { id: id },
-    { "results.geoJson": locations[bestLocIndex].geoJson }
-  );
-  await Session.findOneAndUpdate(
-    { id: id },
+
+  const sessionPromise = Session.findOneAndUpdate(
+    { id },
     {
+      "results.cost": minCost,
       "results.endpoint": bestLocationName,
       "results.endpointType": bestLocationType,
       "results.geoJson": locations[bestLocIndex].geoJson,
     }
   );
+
+  promises.push(sessionPromise);
+
+  await Promise.all(promises);
 };
 
 module.exports = driver;

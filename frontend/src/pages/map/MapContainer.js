@@ -9,7 +9,8 @@ import axios from "axios";
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
-let randomColourArray = [
+
+const randomColourArray = [
   "#E71212",
   "#E77C12",
   "#6A9D11",
@@ -25,13 +26,14 @@ let randomColourArray = [
   "#ffff66",
   "#ffcc00",
 ];
-let mapBounds = [
+
+const mapBounds = [
   [-76.702106, 44.157578],
   [-76.285721, 44.355278],
 ];
-let centerMap = [-76.5, 44.233334];
+
+const centerMap = [-76.5, 44.233334];
 let map;
-let numberOfSources = 0;
 
 class MapContainer extends Component {
   constructor(props) {
@@ -47,142 +49,21 @@ class MapContainer extends Component {
     const { session } = this.props;
     const { users } = session;
 
-    let diff = users.length - numberOfSources;
-
     const calls = [];
     const startingCoords = [];
-    const descr = [];
-    const icon = [];
+    const descriptions = [];
+    const icons = [];
 
-    let places = { type: "FeatureCollection", features: [] };
-
-    console.log("session.users.length", session.users.length);
-    for (let i = 0; i < session.users.length; i++) {
-      if (users[i].results.transportationType) {
-        calls.push(
-          `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
-        );
-        startingCoords.push(users[i].location.geoJson.coordinates);
-        descr.push(users[i].name);
-        icon.push(determineIconOrigin(users[i].results.transportationType));
-      } else {
-        calls.push("");
-      }
-    }
-    let counter = 0;
-    var circleData = { type: "FeatureCollection", features: [] };
-    var lineData = { type: "FeatureCollection", features: [] };
-    for (let i = 0; i < session.users.length; i++) {
-      const result = await axios.get(calls[i]);
-      const route = result.data.routes[0].geometry.coordinates;
-
-      circleData.features.push({
-        type: "Feature",
-        properties: {},
-        geometry: {
-          type: "Point",
-          coordinates: startingCoords[i],
-        },
-      });
-
-      places["features"].push(
-        createPlace(descr[i], icon[i], startingCoords[i])
-      );
-
-      const geojson = generateGeoJson(route);
-
-      lineData["features"].push({
-        type: "geojson",
-        type: "Feature",
-        properties: {
-          color: randomColourArray[i],
-        },
-        geometry: {
-          type: "LineString",
-          coordinates: geojson.geometry.coordinates,
-        },
-      });
-      console.log(`lines-route${i}`);
-
-      /*
-      if (i >= numberOfSources) {
-        if (users[i].results.transportationType) {
-          counter++;
-          let colour = randomColourArray[i];
-          createLines(
-            map,
-            "route" + i.toString(),
-            geojson.geometry.coordinates,
-            colour
-          );
-          createCircle(
-            map,
-            "point-origin" + i.toString(),
-            startingCoords[i],
-            colour,
-            0
-          );
-        }
-      } else {
-        map.getSource(`lines-route${i}`).setData({
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "LineString",
-            coordinates: geojson.geometry.coordinates,
-          },
-        });
-
-        map.getSource(`circles-point-origin${i}`).setData({
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Point",
-                coordinates: startingCoords[i],
-              },
-            },
-          ],
-        });
-      }
-      places["features"].push(
-        createPlace(descr[i], icon[i], startingCoords[i])
-      );
-      */
-    }
-    circleData.features.push({
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Point",
-        coordinates: session.results.geoJson.coordinates,
-      },
-    });
-    places["features"].push(
-      createPlace(
-        session.results.endpoint,
-        determineIconEndPoint(session.results.endpointType),
-        session.results.geoJson.coordinates
-      )
+    initializeApiArrays(
+      users,
+      session,
+      calls,
+      startingCoords,
+      descriptions,
+      icons
     );
-    map.getSource("circlesData").setData(circleData);
-    map.getSource("places").setData(places);
-    map.getSource("lines").setData(lineData);
-    //numberOfSources += counter;
-    /*
-    console.log("session", session);
-    console.log("session.results", session.results);
-    places["features"].push(
-      createPlace(
-        session.results.endpoint,
-        determineIconEndPoint(session.results.endpointType),
-        session.results.geoJson.coordinates
-      )
-    );
-    map.getSource("places").setData(places);
-    */
+
+    addMapLayers(session, calls, startingCoords, descriptions, icons);
   }
 
   async componentDidMount() {
@@ -198,138 +79,40 @@ class MapContainer extends Component {
       style: "mapbox://styles/mapbox/navigation-guidance-night-v4",
     });
 
-    console.log("this.props", this.props);
     const { session } = this.props;
     const { users } = session;
 
     map.on("load", async function () {
       console.log("WE LOADED");
+
       map.resize();
 
       const calls = [];
       const startingCoords = [];
-      const descr = [];
-      const icon = [];
-      var circleData = { type: "FeatureCollection", features: [] };
-      createCirclesSource(circleData);
-      createCirclesLayer(map, "circles", circleData, 10, "#133CE3");
-
-      var lineData = { type: "FeatureCollection", features: [] };
-      createLinesSource(map, lineData);
-      createLineLayer(map, "wohoo", "#ffcc00");
-
-      var places = { type: "FeatureCollection", features: [] };
-      addSource(map, places);
-      addLabelLayer(map);
-      for (let i = 0; i < session.users.length; i++) {
-        calls.push(
-          `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
-        );
-        startingCoords.push(users[i].location.geoJson.coordinates);
-        descr.push(users[i].name);
-        icon.push(determineIconOrigin(users[i].results.transportationType));
-      }
+      const descriptions = [];
+      const icons = [];
 
       shuffleArray(randomColourArray);
-      //var places = { type: "FeatureCollection", features: [] };
 
-      for (let i = 0; i < calls.length; i++) {
-        var colour = randomColourArray[i % calls.length];
-        const result = await axios.get(calls[i]);
-        const route = result.data.routes[0].geometry.coordinates;
+      createCirclesSource();
+      createCirclesLayer("circles", 10);
 
-        circleData.features.push({
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "Point",
-            coordinates: startingCoords[i],
-          },
-        });
+      createLinesSource();
+      createLineLayer("lines");
 
-        places["features"].push(
-          createPlace(descr[i], icon[i], startingCoords[i])
-        );
-        const geojson = generateGeoJson(route);
-        lineData["features"].push({
-          type: "geojson",
-          type: "Feature",
-          properties: {
-            color: colour,
-          },
-          geometry: {
-            type: "LineString",
-            coordinates: geojson.geometry.coordinates,
-          },
-        });
+      createPlacesSource();
+      addLabelLayer();
 
-        // createplace using data from first user ->
-        // descr : users['name']
-        // icon : users['results'].transportationType
-        // startingCoords : users['geoJson'].coordinates
-        /*
-        // route is users['results'].routes.data.routes[0].geometry.coordinates;
-        const geojson = generateGeoJson(route);
-        // Generate line from one origin to endpoint
-        createLines(
-          map,
-          "route" + i.toString(),
-          geojson.geometry.coordinates,
-          colour
-        );
-
-        // Generate origin circles -> use users['geoJson'].coordinates
-        createCircle(
-          map,
-          "point-origin" + i.toString(),
-          startingCoords[i],
-          colour,
-          0
-        );
-        places["features"].push(
-          createPlace(descr[i], icon[i], startingCoords[i])
-        );
-      }
-      // Generate endpoint circle -> use sessions['result']['geoJson'].coordinates
-      createCircle(
-        map,
-        "point-endpoint",
-        session.results.geoJson.coordinates,
-        "#000000",
-        0
+      initializeApiArrays(
+        users,
+        session,
+        calls,
+        startingCoords,
+        descriptions,
+        icons
       );
 
-      if (users.length > 0) {
-        places["features"].push(
-          createPlace(
-            session.results.endpoint,
-            determineIconEndPoint(session.results.endpointType),
-            session.results.geoJson.coordinates
-          )
-        );
-        */
-      }
-      places["features"].push(
-        createPlace(
-          session.results.endpoint,
-          determineIconEndPoint(session.results.endpointType),
-          session.results.geoJson.coordinates
-        )
-      );
-      circleData.features.push({
-        type: "Feature",
-        properties: {},
-        geometry: {
-          type: "Point",
-          coordinates: session.results.geoJson.coordinates,
-        },
-      });
-      map.getSource("circlesData").setData(circleData);
-      map.getSource("places").setData(places);
-      map.getSource("lines").setData(lineData);
-      //console.log(places);
-      //addSource(map, places);
-      //addLabelLayer(map);
+      addMapLayers(session, calls, startingCoords, descriptions, icons);
     });
   }
 
@@ -355,13 +138,84 @@ class MapContainer extends Component {
   }
 }
 
+async function addMapLayers(
+  session,
+  calls,
+  startingCoords,
+  descriptions,
+  icons
+) {
+  let places = { type: "FeatureCollection", features: [] };
+  let circleData = { type: "FeatureCollection", features: [] };
+  let lineData = { type: "FeatureCollection", features: [] };
+
+  for (let i = 0; i < calls.length; i++) {
+    var colour = randomColourArray[i % calls.length];
+    const result = await axios.get(calls[i]);
+    const route = result.data.routes[0].geometry.coordinates;
+
+    circleData.features.push(createCircle(startingCoords[i], colour));
+    places.features.push(
+      createPlace(descriptions[i], icons[i], startingCoords[i])
+    );
+    lineData.features.push(createLine(route, colour));
+  }
+
+  places["features"].push(
+    createPlace(
+      session.results.endpoint,
+      determineIconEndPoint(session.results.endpointType),
+      session.results.geoJson.coordinates
+    )
+  );
+  circleData.features.push(
+    createCircle(session.results.geoJson.coordinates, "#000000")
+  );
+
+  map.getSource("circlesData").setData(circleData);
+  map.getSource("places").setData(places);
+  map.getSource("lines").setData(lineData);
+  createMarkerPopup(places);
+}
+
+function createMarkerPopup(data) {
+  data.features.forEach(function (marker) {
+    if (marker.geometry.coordinates.length) {
+      // create a HTML element for each feature
+      var el = document.createElement("div");
+      el.className = "marker";
+      console.log("COORDIANTES: ", marker.geometry.coordinates);
+
+      // make a marker for each feature and add to the map
+      new mapboxgl.Marker(el)
+        .setLngLat({
+          lng: marker.geometry.coordinates[0],
+          lat: marker.geometry.coordinates[1],
+        })
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }) // add popups
+            .setHTML(
+              "<h5>" +
+                marker.properties.description +
+                "</h5><p>" +
+                "Transport Type: " +
+                marker.properties.icon +
+                "</p>"
+            )
+        )
+        .addTo(map);
+    }
+  });
+}
+
 function determineIconOrigin(transportType) {
-  if (transportType === "driving") {
-    return "car";
-  } else if (transportType === "walking") {
-    return "toilet";
-  } else {
-    return "bicycle";
+  switch (transportType) {
+    case "driving":
+      return "car";
+    case "walking":
+      return "toilet";
+    case "cycling":
+      return "bicycle";
   }
 }
 
@@ -382,90 +236,112 @@ function determineIconEndPoint(ept) {
   }
 }
 
-function createLinesSource(map, userData) {
+function initializeApiArrays(
+  users,
+  session,
+  calls,
+  startingCoords,
+  descriptions,
+  icons
+) {
+  for (let i = 0; i < session.users.length; i++) {
+    if (users[i].results.transportationType) {
+      calls.push(
+        `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
+      );
+      startingCoords.push(users[i].location.geoJson.coordinates);
+      descriptions.push(users[i].name);
+      icons.push(determineIconOrigin(users[i].results.transportationType));
+    } else {
+      calls.push("");
+    }
+  }
+}
+
+function createLinesSource() {
   map.addSource("lines", {
     type: "geojson",
     data: {
       type: "FeatureCollection",
-      features: userData,
+      features: { type: "FeatureCollection", features: [] },
     },
   });
 }
 
-function createCirclesSource(userData) {
+function createLineLayer(id) {
+  map.addLayer({
+    id: id,
+    type: "line",
+    source: "lines",
+    layout: {
+      "line-join": "round",
+      "line-cap": "round",
+    },
+    paint: {
+      "line-color": ["get", "color"],
+      "line-width": 5,
+      "line-opacity": 1.0,
+    },
+  });
+}
+
+function createLine(coordinates, colour) {
+  return {
+    type: "geojson",
+    type: "Feature",
+    properties: {
+      color: colour,
+    },
+    geometry: {
+      type: "LineString",
+      coordinates: coordinates,
+    },
+  };
+}
+
+function createCirclesSource() {
   map.addSource("circlesData", {
     type: "geojson",
     data: {
       type: "FeatureCollection",
-      features: userData,
+      features: { type: "FeatureCollection", features: [] },
     },
   });
 }
 
-function createCirclesLayer(map, id, circlesData, radius, colour) {
+function createCirclesLayer(id, radius) {
   map.addLayer({
     id: id,
     type: "circle",
     source: "circlesData",
     paint: {
       "circle-radius": radius,
-      "circle-color": colour,
+      "circle-color": ["get", "color"],
     },
   });
 }
 
-function createCircle(map, id, coordinates, colour, radius) {
-  map.addSource(`circles-${id}`, {
-    type: "geojson",
-    data: {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "Point",
-            coordinates: coordinates,
-          },
-        },
-      ],
-    },
-  });
-
-  map.addLayer({
-    id: id,
-    type: "circle",
-    source: `circles-${id}`,
-    paint: {
-      "circle-radius": radius,
-      "circle-color": colour,
-    },
-  });
-}
-
-function addSource(map, places) {
-  map.addSource("places", {
-    type: "geojson",
-    data: places,
-  });
-}
-
-function createPlace(description, icon, coord) {
-  var places = {
+function createCircle(coordinates, colour) {
+  return {
     type: "Feature",
     properties: {
-      description: description,
-      icon: icon,
+      color: colour,
     },
     geometry: {
       type: "Point",
-      coordinates: coord,
+      coordinates: coordinates,
     },
   };
-  return places;
 }
 
-function addLabelLayer(map) {
+function createPlacesSource() {
+  map.addSource("places", {
+    type: "geojson",
+    data: { type: "FeatureCollection", features: [] },
+  });
+}
+
+function addLabelLayer() {
   map.addLayer({
     id: "poi-labels",
     type: "symbol",
@@ -484,63 +360,19 @@ function addLabelLayer(map) {
   });
 }
 
-function createLineLayer(map, id, color) {
-  map.addLayer({
-    id: id,
-    type: "line",
-    source: "lines",
-    layout: {
-      "line-join": "round",
-      "line-cap": "round",
-    },
-    paint: {
-      "line-color": ["get", "color"],
-      "line-width": 5,
-      "line-opacity": 1.0,
-    },
-  });
-}
-
-function createLines(map, id, coordinates, color) {
-  numberOfSources++;
-  console.log(`lines-${id}`);
-  map.addSource(`lines-${id}`, {
-    type: "geojson",
-    data: {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "LineString",
-        coordinates: coordinates,
-      },
-    },
-  });
-
-  map.addLayer({
-    id: id,
-    type: "line",
-    source: `lines-${id}`,
-    layout: {
-      "line-join": "round",
-      "line-cap": "round",
-    },
-    paint: {
-      "line-color": color,
-      "line-width": 5,
-      "line-opacity": 1.0,
-    },
-  });
-}
-
-function generateGeoJson(route) {
-  return {
+function createPlace(description, icon, coord) {
+  var places = {
     type: "Feature",
-    properties: {},
+    properties: {
+      description: description,
+      icon: icon,
+    },
     geometry: {
-      type: "LineString",
-      coordinates: route,
+      type: "Point",
+      coordinates: coord,
     },
   };
+  return places;
 }
 
 function shuffleArray(array) {
