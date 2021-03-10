@@ -7,20 +7,20 @@ class Manifest extends Component {
     return (
       <div className="manifestContainer">
         <p className="textStyleTitle">
-          User - Departure - Arrive
+          User - Departure - Time
         </p>
-        <p className="textStyleCont">
-          Mike - 1:32 - 2:00
-        </p>
-        <p className="textStyleCont">
-          Aleks - 1:45 - 2:00
-        </p>
-        <p className="textStyleCont">
-          Alex - 1:50 - 2:00
-        </p>
-        <p className="textStyleCont">
-          Ryan - 1:55 - 2:00
-        </p>
+        { session.results.endpoint && 
+            session.users.map((user) => {
+                return (
+                    <table className="textStyleCont">
+                        <tr>
+                            <td>{user.name} - </td>
+                            <td>?Arive? - </td>
+                            <td>{user.results.durationSeconds}</td>
+                        </tr>
+                    </table>
+                );
+            })}
       </div>
     );
   }

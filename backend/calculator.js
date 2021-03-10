@@ -78,6 +78,16 @@ function formatCoordinates(coordinates) {
   return resultString.trim();
 }
 
+function formatTime(sec) {
+  var hrs = Math.floor(sec / 3600);
+  var min = Math.floor((sec - (hrs * 3600)) / 60);
+  var sec = sec - (hrs * 3600) - (min * 60);
+  if (hrs < 10) {hrs = "0"+hrs}
+  if (min < 10) {min = "0"+min}
+  if (sec < 10) {sec = "0"+sec}
+  return hrs+':'+min+':'+sec
+}
+
 const calculateDistanceFull = async (user, loc, tansportType) => {
   helperString = formatCoordinates([user, loc]);
   options = {
@@ -171,7 +181,7 @@ const driver = async (id) => {
       } else {
         //Not a viable location, user cannot get there
         console.log(
-          "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+          "Not a viable location, user cannot get there"
         );
       }
     }
@@ -181,10 +191,6 @@ const driver = async (id) => {
       userTransTypes = tempTransTypes;
       bestLocationName = locations[bestLocIndex].name;
       bestLocationType = locations[bestLocIndex].locationType;
-
-      console.log("minCost", minCost);
-      console.log("index", bestLocIndex);
-      console.log("TransTypes", userTransTypes);
       //update users best tranport types
     }
   }
@@ -198,6 +204,7 @@ const driver = async (id) => {
       userTransTypes[i]
     );
 
+    //result.routes[0].duration = formatTime(result.routes[0].duration);
     const userPromise = User.findOneAndUpdate(
       { _id: session.users[i]._id },
       {
