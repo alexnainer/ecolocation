@@ -28,8 +28,8 @@ const randomColourArray = [
 ];
 
 const mapBounds = [
-  [-76.702106, 44.157578],
-  [-76.285721, 44.355278],
+  [-77.002106, 44.157578],
+  [-76.085721, 44.355278],
 ];
 
 const centerMap = [-76.5, 44.233334];
@@ -188,7 +188,7 @@ function createMarkerPopup(data) {
       console.log("COORDIANTES: ", marker.geometry.coordinates);
 
       // make a marker for each feature and add to the map
-      new mapboxgl.Marker(el)
+      const mapMarker = new mapboxgl.Marker(el)
         .setLngLat({
           lng: marker.geometry.coordinates[0],
           lat: marker.geometry.coordinates[1],
@@ -205,8 +205,22 @@ function createMarkerPopup(data) {
             )
         )
         .addTo(map);
+        mapMarker.getElement().addEventListener('click', () => {
+          handleMarkerClick(mapMarker);
+        });
     }
   });
+}
+
+function handleMarkerClick(currentMarker) {
+  flyToLocation(currentMarker.getLngLat())
+}
+
+function flyToLocation(featureCoordinates) {
+  map.flyTo({
+    center: featureCoordinates,
+    zoom: 15
+  })
 }
 
 function determineIconOrigin(transportType) {
@@ -353,7 +367,7 @@ function addLabelLayer() {
       "text-radial-offset": 1.5,
       "text-justify": "auto",
       "icon-image": ["concat", ["get", "icon"], "-15"],
-      "icon-size": 2.3,
+      "icon-size": 2.2,
     },
     paint: {
       "text-color": "#ffffff",
