@@ -83,6 +83,7 @@ class MapContainer extends Component {
     const { users } = session;
 
     map.on("load", async function () {
+
       console.log("WE LOADED");
 
       map.resize();
@@ -196,12 +197,12 @@ function createMarkerPopup(data) {
         .setPopup(
           new mapboxgl.Popup({ offset: 25 }) // add popups
             .setHTML(
-              "<h5>" +
+              "<h3>" +
                 marker.properties.description +
-                "</h5><p>" +
-                "Transport Type: " +
-                marker.properties.icon +
-                "</p>"
+                "</h3><h4>" +
+                "Address: " +
+                "308 Albert Street" +
+                "</h4>"
             )
         )
         .addTo(map);
