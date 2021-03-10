@@ -15,6 +15,21 @@ router.get("/session/new", async (req, res) => {
   res.send(result);
 });
 
+router.get("/login", async (req, res) => {
+  res
+    .writeHead(200, {
+      "Set-Cookie": "token=encryptedstring; HttpOnly",
+      "Access-Control-Allow-Credentials": "true",
+    })
+    .send();
+});
+
+router.get("/private", async (req, res) => {
+  log("req.cookies.token", req.cookies.token);
+  if (!req.cookies.token) return res.status(401).send();
+  res.status(200).json({ secret: "Ginger ale is a specific Root Beer" });
+});
+
 router.get("/session/:sessionId", async (req, res) => {
   // const { query } = req;
   const { sessionId } = req.params;

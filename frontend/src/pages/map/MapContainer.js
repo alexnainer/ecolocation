@@ -39,7 +39,7 @@ class MapContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      loading: this.props.loading,
     };
   }
 
@@ -54,7 +54,14 @@ class MapContainer extends Component {
     const descriptions = [];
     const icons = [];
 
-    initializeApiArrays(users, session, calls, startingCoords, descriptions, icons);
+    initializeApiArrays(
+      users,
+      session,
+      calls,
+      startingCoords,
+      descriptions,
+      icons
+    );
 
     addMapLayers(session, calls, startingCoords, descriptions, icons);
   }
@@ -96,7 +103,14 @@ class MapContainer extends Component {
       createPlacesSource();
       addLabelLayer();
 
-      initializeApiArrays(users, session, calls, startingCoords, descriptions, icons);
+      initializeApiArrays(
+        users,
+        session,
+        calls,
+        startingCoords,
+        descriptions,
+        icons
+      );
 
       addMapLayers(session, calls, startingCoords, descriptions, icons);
     });
@@ -112,7 +126,11 @@ class MapContainer extends Component {
             </div>
           )}
           <div className="map-container">
-            <div ref={(el) => (this.mapContainer = el)} id="map" className="map" />
+            <div
+              ref={(el) => (this.mapContainer = el)}
+              id="map"
+              className="map"
+            />
           </div>
         </div>
       </div>
@@ -120,18 +138,27 @@ class MapContainer extends Component {
   }
 }
 
-async function addMapLayers(session, calls, startingCoords, descriptions, icons) {
+async function addMapLayers(
+  session,
+  calls,
+  startingCoords,
+  descriptions,
+  icons
+) {
   let places = { type: "FeatureCollection", features: [] };
   let circleData = { type: "FeatureCollection", features: [] };
   let lineData = { type: "FeatureCollection", features: [] };
 
   for (let i = 0; i < calls.length; i++) {
     var colour = randomColourArray[i % calls.length];
+    if (!calls[i]) continue;
     const result = await axios.get(calls[i]);
     const route = result.data.routes[0].geometry.coordinates;
 
     circleData.features.push(createCircle(startingCoords[i], colour));
-    places.features.push(createPlace(descriptions[i], icons[i], startingCoords[i]));
+    places.features.push(
+      createPlace(descriptions[i], icons[i], startingCoords[i])
+    );
     lineData.features.push(createLine(route, colour));
   }
 
@@ -142,7 +169,9 @@ async function addMapLayers(session, calls, startingCoords, descriptions, icons)
       session.results.geoJson.coordinates
     )
   );
-  circleData.features.push(createCircle(session.results.geoJson.coordinates, "#000000"));
+  circleData.features.push(
+    createCircle(session.results.geoJson.coordinates, "#000000")
+  );
 
   map.getSource("circlesData").setData(circleData);
   map.getSource("places").setData(places);
@@ -156,21 +185,30 @@ function createMarkerPopup(data) {
       // create a HTML element for each feature
       var el = document.createElement("div");
       el.className = "marker";
-      
+      console.log("COORDIANTES: ", marker.geometry.coordinates);
+
       // make a marker for each feature and add to the map
-      const mapMarker = new mapboxgl.Marker(el)
-        .setLngLat({lng: marker.geometry.coordinates[0], lat: marker.geometry.coordinates[1]})
+      new mapboxgl.Marker(el)
+        .setLngLat({
+          lng: marker.geometry.coordinates[0],
+          lat: marker.geometry.coordinates[1],
+        })
         .setPopup(
           new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML("<h5>" + marker.properties.description + "</h5><p>" + "Transport Type: " + marker.properties.icon + "</p>")
+            .setHTML(
+              "<h5>" +
+                marker.properties.description +
+                "</h5><p>" +
+                "Transport Type: " +
+                marker.properties.icon +
+                "</p>"
+            )
         )
         .addTo(map);
         mapMarker.getElement().addEventListener('click', () => {
           handleMarkerClick(mapMarker);
         });
     }
-
-      
   });
 }
 
@@ -213,7 +251,14 @@ function determineIconEndPoint(ept) {
   }
 }
 
-function initializeApiArrays(users, session, calls, startingCoords, descriptions, icons) {
+function initializeApiArrays(
+  users,
+  session,
+  calls,
+  startingCoords,
+  descriptions,
+  icons
+) {
   for (let i = 0; i < session.users.length; i++) {
     if (users[i].results.transportationType) {
       calls.push(
