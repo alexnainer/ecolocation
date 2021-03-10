@@ -7,6 +7,7 @@ import { withRouter } from "react-router";
 import Calculate from "../../components/Calculate";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import SnackbarAlert from "../../components/SnackbarAlert";
+import DepartureTimes from "../../components/Sidebar/DepartureTimes";
 
 class MapPage extends Component {
   constructor(props) {
@@ -54,16 +55,38 @@ class MapPage extends Component {
         users,
       },
     });
-    api.postUpdateUser(user);
+    api.putUpdateUser(user);
   }
 
-  async handleUpdateSession(session) {
+  handleDeleteUser = (userId, index) => {
+    const { users } = this.state.session;
+    users.splice(index, 1);
+    this.setState({
+      session: {
+        ...this.state.session,
+        users,
+      },
+    });
+    api.deleteUser(userId);
+  };
+
+  handleUpdateSessionLocation = async (locationPreferences) => {
+    const session = {
+      ...this.state.session,
+      locationPreferences,
+    };
     this.setState({ session });
-    await api.postUpdateSessionPreferences(
-      session.id,
-      session.locationPreferences
-    );
-  }
+    await api.putUpdateSessionLocation(session.id, session.locationPreferences);
+  };
+
+  handleUpdateSessionMeeting = async (meetingPreferences) => {
+    const session = {
+      ...this.state.session,
+      meetingPreferences,
+    };
+    this.setState({ session });
+    await api.putUpdateSessionMeeting(session.id, session.meetingPreferences);
+  };
 
   isFieldsValid = () => {
     for (const user of this.state.session.users) {
@@ -134,11 +157,14 @@ class MapPage extends Component {
               loading={this.state.loading}
               session={this.state.session}
               addPerson={(name) => this.handleAddPerson(name)}
+              deletePerson={this.handleDeleteUser}
               updatePerson={(user) => this.handleUpdatePerson(user)}
-              updateSession={(session) => this.handleUpdateSession(session)}
+              updateSessionLocation={this.handleUpdateSessionLocation}
+              updateSessionMeeting={this.handleUpdateSessionMeeting}
             />
           </Fragment>
         )}
+        <DepartureTimes session={this.state.session} />
         <Calculate
           onClick={this.handleCalculate}
           session={this.state.session}

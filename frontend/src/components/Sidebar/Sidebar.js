@@ -14,6 +14,9 @@ import SearchBar from "../SearchBar";
 import IconButton from "@material-ui/core/IconButton";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+import moment from "moment";
 
 class Sidebar extends Component {
   constructor(props) {
@@ -22,6 +25,7 @@ class Sidebar extends Component {
       showUserPreferences: false,
       showLocationPreferences: false,
       currentUserIndex: -1,
+      meetingDate: {},
     };
   }
 
@@ -30,7 +34,6 @@ class Sidebar extends Component {
   };
 
   handlePersonSelected = (index) => {
-    // this.setState({ currentUser: user });
     const { currentUserIndex } = this.state;
     const sameIndexSelected = currentUserIndex === index;
     this.setState({
@@ -60,12 +63,16 @@ class Sidebar extends Component {
     this.props.updatePerson(user);
   };
 
-  handlePersonNameChange = async (name, index) => {
+  handlePersonNameChange = (name, index) => {
     const user = {
       ...this.props.session.users[index],
       name,
     };
     this.props.updatePerson(user);
+  };
+
+  handleDeletePerson = (userId, index) => {
+    this.props.deletePerson(userId, index);
   };
 
   handleSearchChange = async (searchString) => {
@@ -95,16 +102,26 @@ class Sidebar extends Component {
     this.props.updatePerson(user);
   };
 
-  async handleUpdateSessionPreferences(type, value) {
-    const session = {
-      ...this.props.session,
-      locationPreferences: {
-        ...this.props.session.locationPreferences,
-        [type]: value,
-      },
+  handleDateChange = (date) => {
+    this.setState({ meetingDate: date });
+  };
+
+  handleUpdateSessionDate = () => {
+    const dateTime = moment(this.state.meetingDate).local().format();
+    const meetingPreferences = {
+      ...this.props.session.meetingPreferences,
+      meetingDate: dateTime,
     };
-    this.props.updateSession(session);
-  }
+    this.props.updateSessionMeeting(meetingPreferences);
+  };
+
+  handleUpdateSessionPreferences = (type, value) => {
+    const locationPreferences = {
+      ...this.props.session.locationPreferences,
+      [type]: value,
+    };
+    this.props.updateSessionLocation(locationPreferences);
+  };
 
   render() {
     const { session } = this.props;
@@ -126,11 +143,23 @@ class Sidebar extends Component {
       publicBuilding,
     } = session.locationPreferences;
 
+    const meetingDate = session.meetingPreferences?.meetingDate || "";
+
     return (
       <div className="sidebar-container">
         <div className="meeting-container">
           <div className="meeting-header">
             <h1 className="meeting-text">-- In your meeting --</h1>
+            <div className="date-picker-container">
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <DateTimePicker
+                  onChange={this.handleDateChange}
+                  onClose={this.handleUpdateSessionDate}
+                  value={meetingDate}
+                  variant="inline"
+                />
+              </MuiPickersUtilsProvider>
+            </div>
           </div>
           <div className="list-container">
             {!this.props.loading &&
@@ -140,6 +169,9 @@ class Sidebar extends Component {
                     onClick={() => this.handlePersonSelected(index)}
                     onPersonNameChange={(name) =>
                       this.handlePersonNameChange(name, index)
+                    }
+                    deletePerson={() =>
+                      this.handleDeletePerson(user._id, index)
                     }
                     name={user.name}
                     key={user._id}

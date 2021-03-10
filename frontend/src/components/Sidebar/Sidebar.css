@@ -18,8 +18,9 @@
   padding-top: 5px;
   padding-bottom: 65px;
   width: 100%;
-  /* height: 9%; */
   left: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .meeting-container {
@@ -29,6 +30,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.date-picker-container {
+  display: flex;
+  justify-content: center;
+}
+
+.MuiPickerDTTabs-tabs {
+  background-color: #009b51 !important;
+}
+
+.MuiPickersDay-daySelected,
+.MuiPickersClockPointer-pointer,
+.MuiPickersToolbar-toolbar,
+.MuiPickersClock-pin,
+.MuiPickersClockNumber-clockNumberSelected {
+  background-color: #01af5c !important;
+}
+
+.MuiPickersClockPointer-thumb {
+  border: 14px solid #01af5c !important;
+}
+
+.PrivateTabIndicator-colorSecondary-7 {
+  background-color: #00ff84 !important;
+}
+
+.MuiInput-underline:after {
+  border-bottom: 2px solid #01af5c !important;
+}
+
+.PrivateTabIndicator-root-5 {
+  height: 3px;
 }
 
 .list-container {
@@ -103,7 +137,6 @@
 }
 
 .meeting-text {
-  position: absolute;
   width: 100%;
   font-family: Teko;
   font-style: normal;

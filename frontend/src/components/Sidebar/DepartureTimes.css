@@ -1,0 +1,40 @@
+.departure-times-container {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.32);
+  left: 20.1%;
+  bottom: 10%;
+  vertical-align: bottom;
+}
+
+.departure-times-container:hover {
+  cursor: pointer;
+}
+
+.departure-times-header {
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-family: Teko;
+  font-style: italic;
+  font-size: 50px;
+  text-align: center;
+}
+
+.header-arrow {
+  color: white;
+}
+
+.user-text {
+  color: white;
+  font-family: Teko;
+  font-weight: 300;
+  font-size: 45px;
+  text-align: center;
+  padding: 0 35px;
+}
+
+.user-column {
+  padding: 0 35px;
+}
+
+@import url(https://fonts.googleapis.com/css2?family=Teko:wght@300&display=swap%27);

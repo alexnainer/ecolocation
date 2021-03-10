@@ -48,6 +48,9 @@ const sessionSchema = new Schema(
   {
     id: String,
     users: { $type: [Schema.Types.ObjectId], ref: "User" },
+    meetingPreferences: {
+      meetingDate: Date,
+    },
     locationPreferences: {
       cafe: Boolean,
       outdoors: Boolean,

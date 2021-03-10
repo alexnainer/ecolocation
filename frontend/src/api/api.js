@@ -13,8 +13,14 @@ const api = {
     return axios.get(`/session/${id}`);
   },
 
-  postUpdateSessionPreferences(sessionId, preferences) {
-    return axios.post(`/session/${sessionId}/preferences`, preferences);
+  putUpdateSessionLocation(sessionId, preferences) {
+    console.log("sessionId, preferences", sessionId, preferences);
+    return axios.put(`/session/${sessionId}/preferences/location`, preferences);
+  },
+
+  putUpdateSessionMeeting(sessionId, preferences) {
+    console.log("sessionId, preferences", sessionId, preferences);
+    return axios.put(`/session/${sessionId}/preferences/meeting`, preferences);
   },
 
   postNewUser({ name, sessionId }) {
@@ -22,8 +28,12 @@ const api = {
     return axios.post(`/user/new`, { name, sessionId });
   },
 
-  postUpdateUser(user) {
-    return axios.post(`/user/${user._id}`, user);
+  putUpdateUser(user) {
+    return axios.put(`/user/${user._id}`, user);
+  },
+
+  deleteUser(userId) {
+    return axios.delete(`/user/${userId}`);
   },
 
   getCalculate(id) {

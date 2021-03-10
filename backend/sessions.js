@@ -20,6 +20,7 @@ const getSession = async (id) => {
         hotel: false,
         publicBuilding: false,
       },
+      meetingPreferences: {},
     });
   } else {
     try {
@@ -33,7 +34,7 @@ const getSession = async (id) => {
   }
 };
 
-const updateSessionPreferences = async (sessionId, preferences) => {
+const updateSessionLocation = async (sessionId, preferences) => {
   try {
     return await Session.findOneAndUpdate(
       { id: sessionId },
@@ -45,7 +46,20 @@ const updateSessionPreferences = async (sessionId, preferences) => {
   }
 };
 
+const updateSessionMeeting = async (sessionId, preferences) => {
+  try {
+    return await Session.findOneAndUpdate(
+      { id: sessionId },
+      { meetingPreferences: preferences },
+      options
+    );
+  } catch (e) {
+    logError(e);
+  }
+};
+
 module.exports = {
   getSession,
-  updateSessionPreferences,
+  updateSessionLocation,
+  updateSessionMeeting,
 };
