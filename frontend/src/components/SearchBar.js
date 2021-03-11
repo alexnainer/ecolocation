@@ -8,7 +8,7 @@ class SearchBar extends Component {
     super(props);
     this.state = {};
   }
-
+ 
   onSelect(place) {
     this.props.onLocationChange(place.geometry, place.place_name);
   }
