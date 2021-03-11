@@ -182,53 +182,56 @@ function createMarkerPopups() {
   for (let i = 0; i < mapInformation.places.features.length; i++) {
     let marker = mapInformation.places.features[i];
     let duration = mapInformation.durations[i];
-    if (marker.properties.id != mapInformation.session.id) {
-      // create a HTML element for each feature
-      var el = document.createElement("div");
-      el.className = "marker";
-      // make a marker for each feature and add to the map
-      const mapMarker = new mapboxgl.Marker(el)
-        .setLngLat({
-          lng: marker.geometry.coordinates[0],
-          lat: marker.geometry.coordinates[1],
-        })
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML(
-              "<h3>" +
-                marker.properties.description +
-                `<div class='d-inline-block transport-text'>is ${marker.properties.icon}</div>` +
-                "</h3><h4>" +
-                "<b>Duration: </b>" +
-                duration +
-                " seconds" +
-                "</h4><h4>" +
-                "<b>Address: </b>" +
-                mapInformation.users[i].location.searchString +
-                "</h4>"
-            )
-        )
-        .addTo(map);
-      mapMarker.getElement().addEventListener("click", () => {
-        handleMarkerClick(mapMarker);
-      });
-    } else {
-      var el = document.createElement("div");
-      el.className = "marker";
+    if (mapInformation.places.features.length) {
 
-      const mapMarker = new mapboxgl.Marker(el)
-        .setLngLat({
-          lng: marker.geometry.coordinates[0],
-          lat: marker.geometry.coordinates[1],
-        })
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML("<h3>" + marker.properties.description + "</h3><h4></h4>")
-        )
-        .addTo(map);
-      mapMarker.getElement().addEventListener("click", () => {
-        handleMarkerClick(mapMarker);
-      });
+      if (marker.properties.id != mapInformation.session.id) {
+        // create a HTML element for each feature
+        var el = document.createElement("div");
+        el.className = "marker";
+        // make a marker for each feature and add to the map
+        const mapMarker = new mapboxgl.Marker(el)
+          .setLngLat({
+            lng: marker.geometry.coordinates[0],
+            lat: marker.geometry.coordinates[1],
+          })
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }) // add popups
+              .setHTML(
+                "<h3>" +
+                  marker.properties.description +
+                  `<div class='d-inline-block transport-text'>is ${marker.properties.icon}</div>` +
+                  "</h3><h4>" +
+                  "<b>Duration: </b>" +
+                  duration +
+                  " seconds" +
+                  "</h4><h4>" +
+                  "<b>Address: </b>" +
+                  mapInformation.users[i].location.searchString +
+                  "</h4>"
+              )
+          )
+          .addTo(map);
+        mapMarker.getElement().addEventListener("click", () => {
+          handleMarkerClick(mapMarker);
+        });
+      } else if (marker.properties.id == mapInformation.session.id) {
+        var el = document.createElement("div");
+        el.className = "marker";
+  
+        const mapMarker = new mapboxgl.Marker(el)
+          .setLngLat({
+            lng: marker.geometry.coordinates[0],
+            lat: marker.geometry.coordinates[1],
+          })
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }) // add popups
+              .setHTML("<h3>" + marker.properties.description + "</h3><h4></h4>")
+          )
+          .addTo(map);
+        mapMarker.getElement().addEventListener("click", () => {
+          handleMarkerClick(mapMarker);
+        });
+      }
     }
   }
 }
