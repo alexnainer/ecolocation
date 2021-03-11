@@ -16,6 +16,7 @@
   animation: gradient 4s ease infinite;
   background-color: #01AF5C;
   z-index: 1 !important;
+  flex-direction: row;
 }
 
 .headerUpperline {
@@ -37,10 +38,19 @@
 }
 
 .logoResize {
-  margin-top: -15px;
-  margin-bottom: -33px;
   max-width: 600px;
   max-height: 100px;
+  padding-top: 5px !important;
+  padding-bottom: 2px !important;
+}
+
+.profilePicResize {
+  width: 55px !important;
+  height: 55px !important;
+}
+
+.rounded-circle {
+  border: 2px solid #61ff89 !important;
 }
 
 @keyframes gradient {
