@@ -36,12 +36,15 @@ class UserPreferences extends Component {
     return (
       <div className="user-preferences-container">
         <div className="userPreferencesHeader">
-          <p className="preferenceText">Your Preferences</p>
-          <IconButton onClick={() => this.props.setShow(!this.props.show)}>
+          <div className="preferenceText">Your Preferences</div>
+          <IconButton
+            onClick={() => this.props.setShow(!this.props.show)}
+            classes={{ root: "header-arrow-button" }}
+          >
             {this.props.show ? (
-              <KeyboardArrowDownIcon classes={{ root: "header-arrow" }} />
+              <KeyboardArrowDownIcon classes={{ root: "header-arrow-icon" }} />
             ) : (
-              <KeyboardArrowUpIcon classes={{ root: "header-arrow" }} />
+              <KeyboardArrowUpIcon classes={{ root: "header-arrow-icon" }} />
             )}
           </IconButton>
         </div>

@@ -1,7 +1,7 @@
 .map-container {
   position: relative;
   height: 100vh;
-  width: 80%;
+  width: 100%;
   margin-bottom: -10px;
 }
 
@@ -54,7 +54,6 @@ h5 {
   flex-direction: column;
 }
 
-
 .p1 {
   font-size: 103%;
   margin-top: 10px;
@@ -63,7 +62,6 @@ h5 {
   align-content: center;
   flex-direction: column;
 }
-
 
 .marker {
   width: 50px;
@@ -78,7 +76,7 @@ h5 {
 }
 
 .mapboxgl-popup-content {
-  font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+  font: 400 15px/22px "Source Sans Pro", "Helvetica Neue", Sans-serif;
   padding: 0;
   width: 180px;
 }
@@ -90,22 +88,22 @@ h5 {
 .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
 .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
 .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
-    border-bottom-color: #E9E9E9;
-    }
+  border-bottom-color: #e9e9e9;
+}
 .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
 .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
 .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
-    border-top-color: #E9E9E9;
-    }
+  border-top-color: #e9e9e9;
+}
 .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
-    border-right-color: #E9E9E9;
-    }
+  border-right-color: #e9e9e9;
+}
 .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
-    border-left-color: #E9E9E9;
-    }
+  border-left-color: #e9e9e9;
+}
 
 .mapboxgl-popup-content h3 {
-  background: #01AF5C;
+  background: #01af5c;
   color: #fff;
   margin: 0;
   display: block;
@@ -115,11 +113,11 @@ h5 {
   margin-top: -15px;
   font-size: 2.2em;
   font-family: "Teko", sans-serif;
-  font-style:italic;
+  font-style: italic;
 }
 
 .mapboxgl-popup-content h4 {
-  background: #E9E9E9;
+  background: #e9e9e9;
   margin: 0;
   display: block;
   padding: 10px;

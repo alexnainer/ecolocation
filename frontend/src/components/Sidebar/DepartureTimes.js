@@ -24,12 +24,17 @@ class DepartureTimes extends Component {
     console.log("click");
     this.setState({ show: !this.state.show });
   };
+
   render() {
     const { session } = this.props;
     console.log("session", session);
     console.log("session.users", session.users);
 
-    if (!session.users?.length || !session.meetingPreferences?.meetingDate)
+    if (
+      !session.users?.length ||
+      !session.meetingPreferences?.meetingDate ||
+      !session.results.endpoint
+    )
       return null;
     console.log("show", this.state.show);
     return (

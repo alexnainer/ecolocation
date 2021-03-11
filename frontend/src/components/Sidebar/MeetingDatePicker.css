@@ -1,0 +1,38 @@
+.date-picker-container {
+  display: flex;
+  justify-content: center;
+}
+
+.MuiPickerDTTabs-tabs {
+  background-color: #009b51 !important;
+}
+
+.MuiPickersDay-daySelected,
+.MuiPickersClockPointer-pointer,
+.MuiPickersToolbar-toolbar,
+.MuiPickersClock-pin,
+.MuiPickersClockNumber-clockNumberSelected {
+  background-color: #01af5c !important;
+}
+
+.MuiPickersClockPointer-thumb {
+  border: 14px solid #01af5c !important;
+}
+
+.PrivateTabIndicator-colorSecondary-7 {
+  background-color: #00ff84 !important;
+}
+
+.MuiInput-underline:after,
+.MuiInput-underline:hover:not(.Mui-disabled):before {
+  border-bottom: 2px solid #01af5c !important;
+}
+
+.PrivateTabIndicator-root-5 {
+  height: 3px;
+}
+
+.MuiInputBase-root,
+.MuiInputBase-input {
+  cursor: pointer !important;
+}

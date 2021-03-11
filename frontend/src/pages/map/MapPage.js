@@ -6,7 +6,7 @@ import api from "../../api/api";
 import { withRouter } from "react-router";
 import Calculate from "../../components/Calculate";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import SnackbarAlert from "../../components/SnackbarAlert";
+import SnackbarAlert from "../../components/Generic/SnackbarAlert";
 import DepartureTimes from "../../components/Sidebar/DepartureTimes";
 
 class MapPage extends Component {

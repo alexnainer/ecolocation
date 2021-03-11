@@ -9,6 +9,7 @@ import {
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "@material-ui/core";
+import AlertDialog from "../Generic/AlertDialog";
 
 class PersonButton extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class PersonButton extends Component {
     this.state = {
       editing: false,
       editingName: "",
+      showDeleteDialog: false,
     };
     this.nameRef = React.createRef();
   }
@@ -52,49 +54,69 @@ class PersonButton extends Component {
   };
 
   handleClick = () => {
-    console.log("this.state.editing", this.state.editing);
     if (!this.state.editing) this.props.onClick();
   };
 
-  handleDeleteClick = () => {
+  handleDeleteClick = (e) => {
+    e.stopPropagation();
+    this.setState({ showDeleteDialog: true });
+  };
+
+  handleDelete = () => {
     this.props.deletePerson();
+  };
+
+  handleKeydown = (e) => {
+    if (e.code === "Enter") this.handleSaveEdit();
   };
 
   render() {
     const { editing } = this.state;
     return (
-      <Card.Header
-        className={`people-list ${this.getButtonColour()}`}
-        onClick={this.handleClick}
-      >
-        <Input
-          style={{ display: editing ? "" : "none" }}
-          value={this.state.editingName}
-          onChange={(e) => this.handleNameChange(e.target.value)}
-          inputRef={this.nameRef}
+      <Fragment>
+        <Card.Header
+          className={`people-list ${this.getButtonColour()}`}
+          onClick={this.handleClick}
+        >
+          <Input
+            style={{ display: editing ? "" : "none" }}
+            value={this.state.editingName}
+            onChange={(e) => this.handleNameChange(e.target.value)}
+            inputRef={this.nameRef}
+            onKeyDown={this.handleKeydown}
+          />
+          {editing ? (
+            <Fragment>
+              <FontAwesomeIcon onClick={this.handleSaveEdit} icon={faCheck} />
+              <FontAwesomeIcon onClick={this.handleCancelEdit} icon={faTimes} />
+            </Fragment>
+          ) : (
+            <Fragment>
+              <p className="personTab">{this.props.name}</p>
+              <div className="actions-buttons">
+                <FontAwesomeIcon
+                  style={{ marginRight: "10px" }}
+                  onClick={this.handleEditNameClick}
+                  icon={faPencilAlt}
+                />
+                <FontAwesomeIcon
+                  onClick={this.handleDeleteClick}
+                  icon={faTrashAlt}
+                />
+              </div>
+            </Fragment>
+          )}
+        </Card.Header>
+        <AlertDialog
+          open={this.state.showDeleteDialog}
+          onClose={() => this.setState({ showDeleteDialog: false })}
+          onAgree={this.handleDelete}
+          title={"Confirm Delete"}
+          message={`Are you sure you want to delete ${this.props.name}?`}
+          agreeText="Delete"
+          denyText="Cancel"
         />
-        {editing ? (
-          <Fragment>
-            <FontAwesomeIcon onClick={this.handleSaveEdit} icon={faCheck} />
-            <FontAwesomeIcon onClick={this.handleCancelEdit} icon={faTimes} />
-          </Fragment>
-        ) : (
-          <Fragment>
-            <p className="personTab">{this.props.name}</p>
-            <div className="actions-buttons">
-              <FontAwesomeIcon
-                style={{ marginRight: "10px" }}
-                onClick={this.handleEditNameClick}
-                icon={faPencilAlt}
-              />
-              <FontAwesomeIcon
-                onClick={this.handleDeleteClick}
-                icon={faTrashAlt}
-              />
-            </div>
-          </Fragment>
-        )}
-      </Card.Header>
+      </Fragment>
     );
   }
 }
