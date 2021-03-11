@@ -1,5 +1,5 @@
 const { User, Session } = require("./database/schemas");
-
+const mongoose = require("mongoose");
 const log = require("debug")("sessions");
 const logError = require("debug")("sessions:error");
 
@@ -38,7 +38,30 @@ const updateUser = async (user) => {
   }
 };
 
+const deleteUser = async (userId) => {
+  console.log("userId", userId);
+  try {
+    const sessionPromise = Session.findOneAndUpdate(
+      {
+        users: userId,
+      },
+      {
+        $pull: {
+          users: userId,
+        },
+      }
+    );
+
+    const userPromise = User.findByIdAndDelete(userId);
+
+    await Promise.all([sessionPromise, userPromise]);
+  } catch (e) {
+    logError(e);
+  }
+};
+
 module.exports = {
   createUser,
   updateUser,
+  deleteUser,
 };

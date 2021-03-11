@@ -39,13 +39,24 @@ router.get("/session/:sessionId", async (req, res) => {
   res.send(result);
 });
 
-router.post("/session/:sessionId/preferences", async (req, res) => {
+router.put("/session/:sessionId/preferences/:type", async (req, res) => {
   const { query } = req;
   const { body } = req;
-  const { sessionId } = req.params;
+  const { sessionId, type } = req.params;
 
-  const result = await sessions.updateSessionPreferences(sessionId, body);
-  console.log("result prefs", result);
+  log("type", type);
+
+  let result;
+  switch (type) {
+    case "location":
+      result = await sessions.updateSessionLocation(sessionId, body);
+      break;
+    case "meeting":
+      result = await sessions.updateSessionMeeting(sessionId, body);
+      break;
+    default:
+      res.sendStatus(404);
+  }
 
   res.send(result);
 });
@@ -65,10 +76,16 @@ router.post("/user/new", async (req, res) => {
   res.send(result);
 });
 
-router.post("/user/:userId", async (req, res) => {
+router.put("/user/:userId", async (req, res) => {
   const { body } = req;
   const result = await users.updateUser(body);
   res.send(result);
+});
+
+router.delete("/user/:userId", async (req, res) => {
+  const { userId } = req.params;
+  await users.deleteUser(userId);
+  res.sendStatus(200);
 });
 
 module.exports = router;

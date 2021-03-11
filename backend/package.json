@@ -13,13 +13,13 @@
     "express": "^4.17.1",
     "mongoose": "^5.11.13",
     "nodemon": "^2.0.7",
-    "supports-color": "^8.1.0",
+    "supports-color": "^8.1.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "@powershell -Command $env:DEBUG='server'; node server.js",
+    "start": "@powershell -Command $env:DEBUG='server*'; node server.js",
     "start-prod": "DEBUG=* node server.js"
   },
   "author": "",

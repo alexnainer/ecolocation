@@ -29,6 +29,18 @@ const port = process.env.PORT;
     const mongoIP = process.env.MONGO_IP;
     const mongoPort = process.env.MONGO_PORT;
 
+    console.log("host", host);
+    if (
+      !host ||
+      !port ||
+      !mongoUser ||
+      !mongoPassword ||
+      !mongoIP ||
+      !mongoPort
+    ) {
+      throw "Missing environment variables";
+    }
+
     await mongoose.connect(
       `mongodb://${mongoUser}:${mongoPassword}@${mongoIP}:${mongoPort}/qhacks`,
       {
