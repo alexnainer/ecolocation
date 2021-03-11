@@ -54,6 +54,7 @@ h5 {
   flex-direction: column;
 }
 
+
 .p1 {
   font-size: 103%;
   margin-top: 10px;
@@ -63,19 +64,6 @@ h5 {
   flex-direction: column;
 }
 
-.mapboxgl-popup {
-  max-width: 200px;
-  min-width: 175px;
-}
-
-.mapboxgl-popup-content {
-  color: #FDFEFE;
-    background-color: #212F3C;
-    border-color: #2E4053;
-    max-width: 250px;
-    box-shadow: 3px 3px 2px #17202A;
-    font-family: 'Oswald';
-}
 
 .marker {
   width: 50px;
@@ -84,6 +72,70 @@ h5 {
   cursor: pointer;
 }
 
-/* .mapboxgl-canvas {
-    left: 0;
-  } */
+/* Marker tweaks */
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.mapboxgl-popup-content {
+  font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+  padding: 0;
+  width: 180px;
+}
+
+.mapboxgl-popup-content-wrapper {
+  padding: 1%;
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+    border-bottom-color: #E9E9E9;
+    }
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+    border-top-color: #E9E9E9;
+    }
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+    border-right-color: #E9E9E9;
+    }
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+    border-left-color: #E9E9E9;
+    }
+
+.mapboxgl-popup-content h3 {
+  background: #01AF5C;
+  color: #fff;
+  margin: 0;
+  display: block;
+  padding: 10px;
+  border-radius: 3px 3px 0 0;
+  font-weight: 700;
+  margin-top: -15px;
+  font-size: 2.2em;
+  font-family: "Teko", sans-serif;
+  font-style:italic;
+}
+
+.mapboxgl-popup-content h4 {
+  background: #E9E9E9;
+  margin: 0;
+  display: block;
+  padding: 10px;
+  font-weight: 400;
+  font-size: 1.3em;
+  font-family: "Teko", sans-serif;
+}
+
+.mapboxgl-popup-content div {
+  padding: 10px;
+}
+
+.mapboxgl-container .leaflet-marker-icon {
+  cursor: pointer;
+}
+
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
+  border-bottom-color: #91c949;
+}
