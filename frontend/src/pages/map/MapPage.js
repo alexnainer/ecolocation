@@ -156,6 +156,8 @@ class MapPage extends Component {
             <Sidebar
               loading={this.state.loading}
               session={this.state.session}
+              calculate={this.handleCalculate}
+              hasCalculated={this.state.hasCalculated}
               addPerson={(name) => this.handleAddPerson(name)}
               deletePerson={this.handleDeleteUser}
               updatePerson={(user) => this.handleUpdatePerson(user)}
@@ -164,12 +166,12 @@ class MapPage extends Component {
             />
           </Fragment>
         )}
-        <DepartureTimes session={this.state.session} />
+        {/* <DepartureTimes session={this.state.session} />
         <Calculate
           onClick={this.handleCalculate}
           session={this.state.session}
           hasCalculated={this.state.hasCalculated}
-        />
+        /> */}
         <SnackbarAlert
           open={this.state.validFieldsError}
           onClose={() => this.setState({ validFieldsError: false })}

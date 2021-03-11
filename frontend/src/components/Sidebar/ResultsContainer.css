@@ -1,0 +1,12 @@
+.results-container {
+  position: absolute;
+  top: 90%;
+}
+
+.results-container-shown {
+  left: 100%;
+}
+
+.results-container-hidden {
+  left: 0;
+}

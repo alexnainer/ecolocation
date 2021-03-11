@@ -1,8 +1,5 @@
 .calculateContainer {
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.32);
-  width: 280px;
-  height: 90px;
+  display: flex;
   left: 20.1%;
   top: 90.5%;
   vertical-align: bottom;
@@ -10,6 +7,12 @@
 
 .calculateContainer:hover {
   cursor: pointer;
+}
+
+.calculate-button {
+  background-color: rgba(0, 0, 0, 0.32);
+  width: 280px;
+  height: 90px;
 }
 
 .textStyle {
@@ -29,7 +32,7 @@
 }
 
 .resultContainer {
-  position: absolute;
+  margin-left: 40px;
   background-color: rgba(0, 134, 11, 0.32);
   width: 60vw !important;
   max-height: 90px;

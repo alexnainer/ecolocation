@@ -8,6 +8,8 @@ import { isEqual } from "lodash";
 import carSvg from "../../images/carIcon.svg";
 import walkingSvg from "../../images/walkingIcon.svg";
 import bikingSvg from "../../images/bikingIcon.svg";
+import moment from "moment";
+import momentDurationFormatSetup from "moment-duration-format";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
@@ -42,6 +44,7 @@ let mapInformation;
 
 class MapContainer extends Component {
   constructor(props) {
+    momentDurationFormatSetup(moment);
     super(props);
     this.state = {
       loading: this.props.loading,
@@ -112,7 +115,11 @@ class MapContainer extends Component {
             </div>
           )}
           <div className="map-container">
-            <div ref={(el) => (this.mapContainer = el)} id="map" className="map" />
+            <div
+              ref={(el) => (this.mapContainer = el)}
+              id="map"
+              className="map"
+            />
           </div>
         </div>
       </div>
@@ -145,7 +152,11 @@ async function addMapLayers(session) {
     const route = result.data.routes[0].geometry.coordinates;
 
     mapInformation.circleData.features.push(
-      createCircle(mapInformation.startingCoords[i], mapInformation.ids[i], colour)
+      createCircle(
+        mapInformation.startingCoords[i],
+        mapInformation.ids[i],
+        colour
+      )
     );
     mapInformation.places.features.push(
       createPlace(
@@ -156,7 +167,9 @@ async function addMapLayers(session) {
         1.0
       )
     );
-    mapInformation.lineData.features.push(createLine(route, mapInformation.ids[i], colour));
+    mapInformation.lineData.features.push(
+      createLine(route, mapInformation.ids[i], colour)
+    );
   }
 
   mapInformation.places.features.push(
@@ -183,7 +196,6 @@ function createMarkerPopups() {
     let marker = mapInformation.places.features[i];
     let duration = mapInformation.durations[i];
     if (mapInformation.places.features.length) {
-
       if (marker.properties.id != mapInformation.session.id) {
         // create a HTML element for each feature
         var el = document.createElement("div");
@@ -203,7 +215,6 @@ function createMarkerPopups() {
                   "</h3><h4>" +
                   "<b>Duration: </b>" +
                   duration +
-                  " seconds" +
                   "</h4><h4>" +
                   "<b>Address: </b>" +
                   mapInformation.users[i].location.searchString +
@@ -217,7 +228,7 @@ function createMarkerPopups() {
       } else if (marker.properties.id == mapInformation.session.id) {
         var el = document.createElement("div");
         el.className = "marker";
-  
+
         const mapMarker = new mapboxgl.Marker(el)
           .setLngLat({
             lng: marker.geometry.coordinates[0],
@@ -225,7 +236,9 @@ function createMarkerPopups() {
           })
           .setPopup(
             new mapboxgl.Popup({ offset: 25 }) // add popups
-              .setHTML("<h3>" + marker.properties.description + "</h3><h4></h4>")
+              .setHTML(
+                "<h3>" + marker.properties.description + "</h3><h4></h4>"
+              )
           )
           .addTo(map);
         mapMarker.getElement().addEventListener("click", () => {
@@ -297,8 +310,14 @@ function initializeApiArrays(users, session) {
       );
       mapInformation.startingCoords.push(users[i].location.geoJson.coordinates);
       mapInformation.descriptions.push(users[i].name);
-      mapInformation.icons.push(determineIconOrigin(users[i].results.transportationType));
-      mapInformation.durations.push(users[i].results.durationSeconds);
+      mapInformation.icons.push(
+        determineIconOrigin(users[i].results.transportationType)
+      );
+      mapInformation.durations.push(
+        moment
+          .duration(users[i].results.durationSeconds, "seconds")
+          .format("m [minutes]")
+      );
       mapInformation.ids.push(users[i]._id);
     } else {
       mapInformation.calls.push("");

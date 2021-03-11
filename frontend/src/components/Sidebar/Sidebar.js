@@ -18,8 +18,8 @@ import MeetingDatePicker from "./MeetingDatePicker";
 import Slide from "@material-ui/core/Slide";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ResultsContainer from "./ResultsContainer";
 import { Fade } from "@material-ui/core";
-
 import dayjs from "dayjs";
 class Sidebar extends Component {
   constructor(props) {
@@ -29,6 +29,7 @@ class Sidebar extends Component {
       showLocationPreferences: false,
       currentUserIndex: -1,
       showSidebar: true,
+      sidebarHasHidden: false,
     };
   }
 
@@ -146,7 +147,11 @@ class Sidebar extends Component {
 
     return (
       <Fragment>
-        <Slide in={this.state.showSidebar} direction="right">
+        <Slide
+          in={this.state.showSidebar}
+          direction="right"
+          onExited={() => this.setState({ sidebarHasHidden: true })}
+        >
           <div className="sidebar-container">
             <div className="meeting-container">
               <div className="meeting-header">
@@ -408,23 +413,39 @@ class Sidebar extends Component {
             </div>
             <IconButton
               onClick={() =>
-                this.setState({ showSidebar: !this.state.showSidebar })
+                this.setState({
+                  showSidebar: !this.state.showSidebar,
+                  sidebarHasHidden: !this.state.sidebarHasHidden,
+                })
               }
               classes={{ root: "hide-button hide-button-open" }}
             >
               <ChevronLeftIcon />
             </IconButton>
+            <ResultsContainer
+              session={this.props.session}
+              hasCalculated={this.props.hadCalculated}
+              calculate={this.props.calculate}
+            />
           </div>
         </Slide>
-        <Fade in={!this.state.showSidebar}>
-          <IconButton
-            onClick={() =>
-              this.setState({ showSidebar: !this.state.showSidebar })
-            }
-            classes={{ root: "hide-button hide-button-closed" }}
-          >
-            <ChevronRightIcon />
-          </IconButton>
+        <Fade in={!this.state.showSidebar && this.state.sidebarHasHidden}>
+          <div>
+            <IconButton
+              onClick={() =>
+                this.setState({ showSidebar: !this.state.showSidebar })
+              }
+              classes={{ root: "hide-button hide-button-closed" }}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+            <ResultsContainer
+              session={this.props.session}
+              hasCalculated={this.props.hadCalculated}
+              calculate={this.props.calculate}
+              sidebarHasHidden={this.state.sidebarHasHidden}
+            />
+          </div>
         </Fade>
       </Fragment>
     );

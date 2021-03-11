@@ -22,6 +22,7 @@
   padding: 5px;
   color: #a7915f;
   background-color: white !important;
+  z-index: 2;
 }
 
 .hide-button-open {

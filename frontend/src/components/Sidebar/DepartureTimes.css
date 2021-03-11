@@ -1,9 +1,10 @@
 .departure-times-container {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.32);
-  left: 20.1%;
-  bottom: 10%;
+  left: 0;
+  bottom: 100%;
   vertical-align: bottom;
+  margin-bottom: 10px;
 }
 
 .departure-times-container:hover {
