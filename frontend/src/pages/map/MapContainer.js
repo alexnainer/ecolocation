@@ -4,6 +4,10 @@ import mapboxgl from "mapbox-gl";
 import "./MapContainer.css";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
+import { isEqual } from "lodash";
+import carSvg from "../../images/carIcon.svg";
+import walkingSvg from "../../images/walkingIcon.svg";
+import bikingSvg from "../../images/bikingIcon.svg";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
@@ -34,6 +38,7 @@ const mapBounds = [
 
 const centerMap = [-76.5, 44.233334];
 let map;
+let mapInformation;
 
 class MapContainer extends Component {
   constructor(props) {
@@ -43,27 +48,18 @@ class MapContainer extends Component {
     };
   }
 
-  async componentDidUpdate() {
-    console.log("didUpdate");
+  async componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.session, this.props.session)) {
+      console.log("didUpdate");
+      const { session } = this.props;
+      const { users } = session;
 
-    const { session } = this.props;
-    const { users } = session;
-
-    const calls = [];
-    const startingCoords = [];
-    const descriptions = [];
-    const icons = [];
-
-    initializeApiArrays(
-      users,
-      session,
-      calls,
-      startingCoords,
-      descriptions,
-      icons
-    );
-
-    addMapLayers(session, calls, startingCoords, descriptions, icons);
+      createMapInformation(session, users);
+      initializeApiArrays(users, session);
+      addMapLayers(session);
+    } else {
+      console.log("didntUpdate");
+    }
   }
 
   async componentDidMount() {
@@ -78,20 +74,16 @@ class MapContainer extends Component {
       container: "map",
       style: "mapbox://styles/mapbox/navigation-guidance-night-v4",
     });
-
+    loadCustomImages();
     const { session } = this.props;
     const { users } = session;
 
     map.on("load", async function () {
-
       console.log("WE LOADED");
 
       map.resize();
 
-      const calls = [];
-      const startingCoords = [];
-      const descriptions = [];
-      const icons = [];
+      createMapInformation(session, users);
 
       shuffleArray(randomColourArray);
 
@@ -104,16 +96,9 @@ class MapContainer extends Component {
       createPlacesSource();
       addLabelLayer();
 
-      initializeApiArrays(
-        users,
-        session,
-        calls,
-        startingCoords,
-        descriptions,
-        icons
-      );
+      initializeApiArrays(users, session);
 
-      addMapLayers(session, calls, startingCoords, descriptions, icons);
+      addMapLayers(session);
     });
   }
 
@@ -127,11 +112,7 @@ class MapContainer extends Component {
             </div>
           )}
           <div className="map-container">
-            <div
-              ref={(el) => (this.mapContainer = el)}
-              id="map"
-              className="map"
-            />
+            <div ref={(el) => (this.mapContainer = el)} id="map" className="map" />
           </div>
         </div>
       </div>
@@ -139,137 +120,188 @@ class MapContainer extends Component {
   }
 }
 
-async function addMapLayers(
-  session,
-  calls,
-  startingCoords,
-  descriptions,
-  icons
-) {
-  let places = { type: "FeatureCollection", features: [] };
-  let circleData = { type: "FeatureCollection", features: [] };
-  let lineData = { type: "FeatureCollection", features: [] };
+function createMapInformation(session, users) {
+  mapInformation = {};
+  mapInformation.session = session;
+  mapInformation.users = users;
+  mapInformation.startingCoords = [];
+  mapInformation.calls = [];
+  mapInformation.descriptions = [];
+  mapInformation.icons = [];
+  mapInformation.places = [];
+  mapInformation.durations = [];
+  mapInformation.ids = [];
+}
 
-  for (let i = 0; i < calls.length; i++) {
-    var colour = randomColourArray[i % calls.length];
-    if (!calls[i]) continue;
-    const result = await axios.get(calls[i]);
+async function addMapLayers(session) {
+  mapInformation.places = { type: "FeatureCollection", features: [] };
+  mapInformation.circleData = { type: "FeatureCollection", features: [] };
+  mapInformation.lineData = { type: "FeatureCollection", features: [] };
+
+  for (let i = 0; i < mapInformation.calls.length; i++) {
+    var colour = randomColourArray[i % mapInformation.calls.length];
+    if (!mapInformation.calls[i]) continue;
+    const result = await axios.get(mapInformation.calls[i]);
     const route = result.data.routes[0].geometry.coordinates;
 
-    circleData.features.push(createCircle(startingCoords[i], colour));
-    places.features.push(
-      createPlace(descriptions[i], icons[i], startingCoords[i])
+    mapInformation.circleData.features.push(
+      createCircle(mapInformation.startingCoords[i], mapInformation.ids[i], colour)
     );
-    lineData.features.push(createLine(route, colour));
+    mapInformation.places.features.push(
+      createPlace(
+        mapInformation.descriptions[i],
+        mapInformation.icons[i],
+        mapInformation.ids[i],
+        mapInformation.startingCoords[i],
+        1.0
+      )
+    );
+    mapInformation.lineData.features.push(createLine(route, mapInformation.ids[i], colour));
   }
 
-  places["features"].push(
+  mapInformation.places.features.push(
     createPlace(
       session.results.endpoint,
       determineIconEndPoint(session.results.endpointType),
-      session.results.geoJson.coordinates
+      session.id,
+      session.results.geoJson.coordinates,
+      2.6
     )
   );
-  circleData.features.push(
-    createCircle(session.results.geoJson.coordinates, "#000000")
+  mapInformation.circleData.features.push(
+    createCircle(session.results.geoJson.coordinates, session.id, "#000000")
   );
 
-  map.getSource("circlesData").setData(circleData);
-  map.getSource("places").setData(places);
-  map.getSource("lines").setData(lineData);
-  createMarkerPopup(places);
+  map.getSource("circlesData").setData(mapInformation.circleData);
+  map.getSource("places").setData(mapInformation.places);
+  map.getSource("lines").setData(mapInformation.lineData);
+  createMarkerPopups();
 }
 
-function createMarkerPopup(data) {
-  data.features.forEach(function (marker) {
-    if (marker.geometry.coordinates.length) {
-      // create a HTML element for each feature
-      var el = document.createElement("div");
-      el.className = "marker";
-      console.log("COORDIANTES: ", marker.geometry.coordinates);
+function createMarkerPopups() {
+  for (let i = 0; i < mapInformation.places.features.length; i++) {
+    let marker = mapInformation.places.features[i];
+    let duration = mapInformation.durations[i];
+    if (mapInformation.places.features.length) {
 
-      // make a marker for each feature and add to the map
-      const mapMarker = new mapboxgl.Marker(el)
-        .setLngLat({
-          lng: marker.geometry.coordinates[0],
-          lat: marker.geometry.coordinates[1],
-        })
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML(
-              "<h3>" +
-                marker.properties.description +
-                "</h3><h4>" +
-                "Address: " +
-                "308 Albert Street" +
-                "</h4>"
-            )
-        )
-        .addTo(map);
-        mapMarker.getElement().addEventListener('click', () => {
+      if (marker.properties.id != mapInformation.session.id) {
+        // create a HTML element for each feature
+        var el = document.createElement("div");
+        el.className = "marker";
+        // make a marker for each feature and add to the map
+        const mapMarker = new mapboxgl.Marker(el)
+          .setLngLat({
+            lng: marker.geometry.coordinates[0],
+            lat: marker.geometry.coordinates[1],
+          })
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }) // add popups
+              .setHTML(
+                "<h3>" +
+                  marker.properties.description +
+                  `<div class='d-inline-block transport-text'>is ${marker.properties.icon}</div>` +
+                  "</h3><h4>" +
+                  "<b>Duration: </b>" +
+                  duration +
+                  " seconds" +
+                  "</h4><h4>" +
+                  "<b>Address: </b>" +
+                  mapInformation.users[i].location.searchString +
+                  "</h4>"
+              )
+          )
+          .addTo(map);
+        mapMarker.getElement().addEventListener("click", () => {
           handleMarkerClick(mapMarker);
         });
+      } else if (marker.properties.id == mapInformation.session.id) {
+        var el = document.createElement("div");
+        el.className = "marker";
+  
+        const mapMarker = new mapboxgl.Marker(el)
+          .setLngLat({
+            lng: marker.geometry.coordinates[0],
+            lat: marker.geometry.coordinates[1],
+          })
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }) // add popups
+              .setHTML("<h3>" + marker.properties.description + "</h3><h4></h4>")
+          )
+          .addTo(map);
+        mapMarker.getElement().addEventListener("click", () => {
+          handleMarkerClick(mapMarker);
+        });
+      }
     }
-  });
+  }
+}
+
+function loadCustomImages() {
+  let carimg = new Image(70, 70);
+  carimg.onload = () => map.addImage("Driving", carimg);
+  carimg.src = carSvg;
+
+  let bikeimg = new Image(70, 70);
+  bikeimg.onload = () => map.addImage("Biking", bikeimg);
+  bikeimg.src = bikingSvg;
+
+  let walkimg = new Image(70, 70);
+  walkimg.onload = () => map.addImage("Walking", walkimg);
+  walkimg.src = walkingSvg;
 }
 
 function handleMarkerClick(currentMarker) {
-  flyToLocation(currentMarker.getLngLat())
+  flyToLocation(currentMarker.getLngLat());
 }
 
 function flyToLocation(featureCoordinates) {
   map.flyTo({
     center: featureCoordinates,
-    zoom: 15
-  })
+    zoom: 15,
+  });
 }
 
 function determineIconOrigin(transportType) {
   switch (transportType) {
     case "driving":
-      return "car";
+      return "Driving";
     case "walking":
-      return "toilet";
+      return "Walking";
     case "cycling":
-      return "bicycle";
+      return "Biking";
   }
 }
 
 function determineIconEndPoint(ept) {
   switch (ept) {
     case "Outdoors":
-      return "garden";
+      return "garden-15";
     case "Cafe":
-      return "cafe";
+      return "cafe-15";
     case "Government Building":
-      return "town-hall";
+      return "town-hall-15";
     case "Public Building":
-      return "college";
+      return "college-15";
     case "hotel":
-      return "suitcase";
+      return "suitcase-15";
     case "Restaurant":
-      return "restaurant";
+      return "restaurant-15";
   }
 }
 
-function initializeApiArrays(
-  users,
-  session,
-  calls,
-  startingCoords,
-  descriptions,
-  icons
-) {
+function initializeApiArrays(users, session) {
   for (let i = 0; i < session.users.length; i++) {
     if (users[i].results.transportationType) {
-      calls.push(
+      mapInformation.calls.push(
         `https://api.mapbox.com/directions/v5/mapbox/${users[i].results.transportationType}/${users[i].location.geoJson.coordinates[0]}%2C${users[i].location.geoJson.coordinates[1]}%3B${session.results.geoJson.coordinates[0]}%2C${session.results.geoJson.coordinates[1]}?alternatives=false&overview=full&geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_API_KEY}`
       );
-      startingCoords.push(users[i].location.geoJson.coordinates);
-      descriptions.push(users[i].name);
-      icons.push(determineIconOrigin(users[i].results.transportationType));
+      mapInformation.startingCoords.push(users[i].location.geoJson.coordinates);
+      mapInformation.descriptions.push(users[i].name);
+      mapInformation.icons.push(determineIconOrigin(users[i].results.transportationType));
+      mapInformation.durations.push(users[i].results.durationSeconds);
+      mapInformation.ids.push(users[i]._id);
     } else {
-      calls.push("");
+      mapInformation.calls.push("");
     }
   }
 }
@@ -301,11 +333,12 @@ function createLineLayer(id) {
   });
 }
 
-function createLine(coordinates, colour) {
+function createLine(coordinates, id, colour) {
   return {
     type: "geojson",
     type: "Feature",
     properties: {
+      id: id,
       color: colour,
     },
     geometry: {
@@ -331,16 +364,17 @@ function createCirclesLayer(id, radius) {
     type: "circle",
     source: "circlesData",
     paint: {
-      "circle-radius": radius,
+      "circle-radius": 0,
       "circle-color": ["get", "color"],
     },
   });
 }
 
-function createCircle(coordinates, colour) {
+function createCircle(coordinates, id, colour) {
   return {
     type: "Feature",
     properties: {
+      id: id,
       color: colour,
     },
     geometry: {
@@ -367,8 +401,10 @@ function addLabelLayer() {
       "text-variable-anchor": ["top", "bottom", "left", "right"],
       "text-radial-offset": 1.5,
       "text-justify": "auto",
-      "icon-image": ["concat", ["get", "icon"], "-15"],
-      "icon-size": 2.2,
+      "icon-image": ["concat", ["get", "icon"]],
+      "icon-allow-overlap": true,
+      "text-allow-overlap": true,
+      "icon-size": ["get", "iconsize"],
     },
     paint: {
       "text-color": "#ffffff",
@@ -376,12 +412,14 @@ function addLabelLayer() {
   });
 }
 
-function createPlace(description, icon, coord) {
+function createPlace(description, icon, id, coord, iconsize) {
   var places = {
     type: "Feature",
     properties: {
       description: description,
       icon: icon,
+      iconsize: iconsize,
+      id: id,
     },
     geometry: {
       type: "Point",
