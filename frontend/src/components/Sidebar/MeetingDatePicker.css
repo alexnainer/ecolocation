@@ -35,4 +35,5 @@
 .MuiInputBase-root,
 .MuiInputBase-input {
   cursor: pointer !important;
+  text-align: center;
 }

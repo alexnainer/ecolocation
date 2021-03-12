@@ -19,6 +19,7 @@ class MapPage extends Component {
       session: { results: {} },
       validFieldsError: false,
       missingUsersError: false,
+      currentUserIndex: -1,
     };
   }
 
@@ -57,6 +58,10 @@ class MapPage extends Component {
     });
     api.putUpdateUser(user);
   }
+
+  handleUpdateCurrentUser = (index) => {
+    this.setState({ currentUserIndex: index });
+  };
 
   handleDeleteUser = (userId, index) => {
     const { users } = this.state.session;
@@ -152,6 +157,8 @@ class MapPage extends Component {
             <MapContainer
               session={this.state.session}
               loading={this.state.loading}
+              currentUserIndex={this.state.currentUserIndex}
+              updateCurrentUserIndex={this.handleUpdateCurrentUser}
             />
             <Sidebar
               loading={this.state.loading}
@@ -163,6 +170,8 @@ class MapPage extends Component {
               updatePerson={(user) => this.handleUpdatePerson(user)}
               updateSessionLocation={this.handleUpdateSessionLocation}
               updateSessionMeeting={this.handleUpdateSessionMeeting}
+              currentUserIndex={this.state.currentUserIndex}
+              updateCurrentUserIndex={this.handleUpdateCurrentUser}
             />
           </Fragment>
         )}

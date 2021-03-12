@@ -27,10 +27,21 @@ class Sidebar extends Component {
     this.state = {
       showUserPreferences: false,
       showLocationPreferences: false,
-      currentUserIndex: -1,
+      // currentUserIndex: -1,
       showSidebar: true,
       sidebarHasHidden: false,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentUserIndex !== this.props.currentUserIndex) {
+      if (this.props.currentUserIndex >= 0) {
+        this.setState({
+          showUserPreferences: true,
+          showLocationPreferences: true,
+        });
+      }
+    }
   }
 
   handleAddPerson = () => {
@@ -38,13 +49,13 @@ class Sidebar extends Component {
   };
 
   handlePersonSelected = (index) => {
-    const { currentUserIndex } = this.state;
+    const { currentUserIndex } = this.props;
     const sameIndexSelected = currentUserIndex === index;
     this.setState({
-      currentUserIndex: sameIndexSelected ? -1 : index,
       showUserPreferences: !sameIndexSelected,
       showLocationPreferences: !sameIndexSelected,
     });
+    this.props.updateCurrentUserIndex(sameIndexSelected ? -1 : index);
   };
 
   setShowUserPreferences = (show) => {
@@ -54,7 +65,7 @@ class Sidebar extends Component {
   };
 
   handleUpdateTransportation = (type, distance) => {
-    const { currentUserIndex } = this.state;
+    const { currentUserIndex } = this.props;
     const currentUser = this.props.session.users[currentUserIndex];
     const user = {
       ...currentUser,
@@ -80,7 +91,7 @@ class Sidebar extends Component {
   };
 
   handleSearchChange = async (searchString) => {
-    const { currentUserIndex } = this.state;
+    const { currentUserIndex } = this.props;
     const currentUser = this.props.session.users[currentUserIndex];
     const user = {
       ...currentUser,
@@ -93,7 +104,7 @@ class Sidebar extends Component {
   };
 
   handleLocationChange = async (location, searchString) => {
-    const { currentUserIndex } = this.state;
+    const { currentUserIndex } = this.props;
     const currentUser = this.props.session.users[currentUserIndex];
     const user = {
       ...currentUser,
@@ -124,12 +135,8 @@ class Sidebar extends Component {
   };
 
   render() {
-    const { session } = this.props;
-    const {
-      currentUserIndex,
-      showUserPreferences,
-      showLocationPreferences,
-    } = this.state;
+    const { session, currentUserIndex } = this.props;
+    const { showUserPreferences, showLocationPreferences } = this.state;
     let currentUser;
     if (currentUserIndex >= 0) {
       currentUser = session.users[currentUserIndex];
@@ -151,6 +158,7 @@ class Sidebar extends Component {
           in={this.state.showSidebar}
           direction="right"
           onExited={() => this.setState({ sidebarHasHidden: true })}
+          onEntering={() => this.setState({ sidebarHasHidden: false })}
         >
           <div className="sidebar-container">
             <div className="meeting-container">
@@ -415,7 +423,6 @@ class Sidebar extends Component {
               onClick={() =>
                 this.setState({
                   showSidebar: !this.state.showSidebar,
-                  sidebarHasHidden: !this.state.sidebarHasHidden,
                 })
               }
               classes={{ root: "hide-button hide-button-open" }}
@@ -429,7 +436,7 @@ class Sidebar extends Component {
             />
           </div>
         </Slide>
-        <Fade in={!this.state.showSidebar && this.state.sidebarHasHidden}>
+        {!this.state.showSidebar && this.state.sidebarHasHidden && (
           <div>
             <IconButton
               onClick={() =>
@@ -446,7 +453,7 @@ class Sidebar extends Component {
               sidebarHasHidden={this.state.sidebarHasHidden}
             />
           </div>
-        </Fade>
+        )}
       </Fragment>
     );
   }
