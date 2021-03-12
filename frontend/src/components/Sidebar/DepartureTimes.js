@@ -52,14 +52,16 @@ class DepartureTimes extends Component {
         <Collapse in={this.state.show}>
           <table className="users-container">
             {session.users.map((user) => {
-              return (
-                <tr className="user-text">
-                  <td className="user-column">{user.name}</td>
-                  <td className="user-column">
-                    {this.departureTime(user.results.durationSeconds)}
-                  </td>
-                </tr>
-              );
+              if (user.results.distanceMetres) {
+                return (
+                  <tr className="user-text">
+                    <td className="user-column">{user.name}</td>
+                    <td className="user-column">
+                      {this.departureTime(user.results.durationSeconds)}
+                    </td>
+                  </tr>
+                );
+              }
             })}
           </table>
         </Collapse>
