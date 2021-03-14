@@ -53,8 +53,9 @@ class MapContainer extends Component {
 
   async componentDidUpdate(prevProps) {
     if (
-      !isEqual(prevProps.session, this.props.session) ||
-      !this.areArraysEqual(prevProps.session.users, this.props.session.users)
+      !isEqual(prevProps.session, this.props.session)
+      // !this.areArraysEqual(prevProps.session.users, this.props.session.users)
+      // this.didNamesChange(prevProps.session.users, this.props.session.users)
     ) {
       console.log("didUpdate");
       const { session } = this.props;
@@ -112,6 +113,15 @@ class MapContainer extends Component {
 
   areArraysEqual = (x, y) => {
     return isEmpty(xorWith([x, y], isEqual));
+  };
+
+  didNamesChange = (users1, users2) => {
+    for (let i = 0; i < Math.min(users1.length, users2.length); i++) {
+      console.log("users1[i].name", users1[i].name);
+      console.log("users2[i].name", users2[i].name);
+      if (users1[i].name !== users2[i].name) return true;
+    }
+    return false;
   };
 
   handleMarkerClick = (currentMarker, i) => {
