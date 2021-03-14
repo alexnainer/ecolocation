@@ -27,20 +27,26 @@ class Header extends Component {
     return (
       <div className="headerIndex">
         <div className="headerUpperline"></div>
-        <Container fluid className="d-flex justify-content-center align-items-center header-container">
+        <Container
+          fluid
+          className="d-flex justify-content-center align-items-center header-container"
+        >
           <Row className="w-100">
             <Col xs={3}></Col>
             <Col xs={6} className="d-flex justify-content-center">
               <img src={logo} alt="logo" className="logoResize" />
             </Col>
-            <Col xs={3} className="d-flex justify-content-center align-items-center">
-              <Image
+            <Col
+              xs={3}
+              className="d-flex justify-content-center align-items-center"
+            >
+              {/* <Image
                 onclick={this.handleAccountClick}
                 src={profilePic}
                 className="profilePicResize"
                 roundedCircle
                 fluid
-              />
+              /> */}
             </Col>
           </Row>
         </Container>
