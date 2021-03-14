@@ -48,12 +48,15 @@ class MapContainer extends Component {
     super(props);
     this.state = {
       loading: this.props.loading,
+      mapLoaded: false,
     };
   }
 
   async componentDidUpdate(prevProps) {
+    console.log("componentDidUpdate");
     if (
-      !isEqual(prevProps.session, this.props.session) ||
+      (this.state.mapLoaded &&
+        !isEqual(prevProps.session, this.props.session)) ||
       !this.areArraysEqual(prevProps.session.users, this.props.session.users)
     ) {
       console.log("didUpdate");
@@ -83,13 +86,16 @@ class MapContainer extends Component {
     this.loadCustomImages();
     const { session } = this.props;
     const { users } = session;
+    this.createMapInformation();
 
     map.on("load", async () => {
       console.log("WE LOADED");
 
-      map.resize();
+      this.setState({ mapLoaded: true });
 
-      this.createMapInformation(session, users);
+      console.log("1");
+      map.resize();
+      console.log("2");
 
       this.shuffleArray(randomColourArray);
 
@@ -101,6 +107,7 @@ class MapContainer extends Component {
 
       this.createPlacesSource();
       this.addLabelLayer();
+      console.log("3");
 
       if (!mapInformation.session.users?.length) return;
 
@@ -119,7 +126,9 @@ class MapContainer extends Component {
     this.props.updateCurrentUserIndex(i);
   };
 
-  createMapInformation = (session, users) => {
+  createMapInformation = () => {
+    const { session } = this.props;
+    const { users } = session;
     mapInformation = {};
     mapInformation.session = session;
     mapInformation.users = users;
@@ -132,7 +141,8 @@ class MapContainer extends Component {
     mapInformation.ids = [];
   };
 
-  addMapLayers = async (session) => {
+  addMapLayers = async () => {
+    const { session } = this.props;
     mapInformation.places = { type: "FeatureCollection", features: [] };
     mapInformation.circleData = { type: "FeatureCollection", features: [] };
     mapInformation.lineData = { type: "FeatureCollection", features: [] };
@@ -181,9 +191,10 @@ class MapContainer extends Component {
       )
     );
 
-    map.getSource("circlesData").setData(mapInformation.circleData);
-    map.getSource("places").setData(mapInformation.places);
-    map.getSource("lines").setData(mapInformation.lineData);
+    map.getSource("circlesData")?.setData(mapInformation.circleData);
+    map.getSource("places")?.setData(mapInformation.places);
+    map.getSource("lines")?.setData(mapInformation.lineData);
+
     this.createMarkerPopups();
   };
 
@@ -220,7 +231,7 @@ class MapContainer extends Component {
                     duration +
                     "</h4><h4>" +
                     "<b>Address: </b>" +
-                    mapInformation.users[i].location.searchString +
+                    mapInformation.users[i]?.location?.searchString +
                     "</h4>"
                 )
             )
@@ -371,6 +382,7 @@ class MapContainer extends Component {
   };
 
   createCirclesSource = () => {
+    console.log("createCirclesSource");
     map.addSource("circlesData", {
       type: "geojson",
       data: {
@@ -381,6 +393,8 @@ class MapContainer extends Component {
   };
 
   createCirclesLayer = (id, radius) => {
+    console.log("createCirclesLayer");
+
     map.addLayer({
       id: id,
       type: "circle",
@@ -461,11 +475,19 @@ class MapContainer extends Component {
   };
 
   render() {
+    const { showSidebar, sidebarHasHidden } = this.props;
+    const isFullScreen = !showSidebar && sidebarHasHidden;
+    console.log("isFullScreen", isFullScreen);
+
     return (
       <div>
         <div className="d-flex justify-content-end align-items-end">
           {this.state.loading && (
-            <div className="loading position-absolute d-flex justify-content-center align-items-center">
+            <div
+              className={`loading position-absolute d-flex justify-content-center align-items-center ${
+                isFullScreen ? "loading-fullscreen" : ""
+              }`}
+            >
               <CircularProgress />
             </div>
           )}

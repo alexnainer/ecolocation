@@ -28,8 +28,6 @@ class Sidebar extends Component {
       showUserPreferences: false,
       showLocationPreferences: false,
       // currentUserIndex: -1,
-      showSidebar: true,
-      sidebarHasHidden: false,
     };
   }
 
@@ -135,12 +133,18 @@ class Sidebar extends Component {
   };
 
   render() {
-    const { session, currentUserIndex } = this.props;
+    const {
+      session,
+      currentUserIndex,
+      showSidebar,
+      sidebarHasHidden,
+    } = this.props;
     const { showUserPreferences, showLocationPreferences } = this.state;
     let currentUser;
     if (currentUserIndex >= 0) {
       currentUser = session.users[currentUserIndex];
     }
+
     const {
       cafe,
       outdoors,
@@ -155,10 +159,10 @@ class Sidebar extends Component {
     return (
       <Fragment>
         <Slide
-          in={this.state.showSidebar}
+          in={showSidebar}
           direction="right"
-          onExited={() => this.setState({ sidebarHasHidden: true })}
-          onEntering={() => this.setState({ sidebarHasHidden: false })}
+          onExited={() => this.props.setSidebarHasHidden(true)}
+          onEntering={() => this.props.setSidebarHasHidden(false)}
         >
           <div className="sidebar-container">
             <div className="meeting-container">
@@ -208,16 +212,16 @@ class Sidebar extends Component {
         /> */}
               <div className="location-preferences-container">
                 {/* LOCATION PREFERENCES */}
-                <div className="locationPreferencesHeader">
+                <div
+                  className="locationPreferencesHeader"
+                  onClick={() =>
+                    this.setState({
+                      showLocationPreferences: !showLocationPreferences,
+                    })
+                  }
+                >
                   <div className="preferenceText">Location Preferences</div>
-                  <IconButton
-                    classes={{ root: "header-arrow-button" }}
-                    onClick={() =>
-                      this.setState({
-                        showLocationPreferences: !showLocationPreferences,
-                      })
-                    }
-                  >
+                  <IconButton classes={{ root: "header-arrow-button" }}>
                     {showLocationPreferences ? (
                       <KeyboardArrowDownIcon
                         classes={{ root: "header-arrow-icon" }}
@@ -421,9 +425,7 @@ class Sidebar extends Component {
             </div>
             <IconButton
               onClick={() =>
-                this.setState({
-                  showSidebar: !this.state.showSidebar,
-                })
+                this.props.setShowSidebar(!showSidebar)
               }
               classes={{ root: "hide-button hide-button-open" }}
             >
@@ -436,11 +438,11 @@ class Sidebar extends Component {
             />
           </div>
         </Slide>
-        {!this.state.showSidebar && this.state.sidebarHasHidden && (
+        {!showSidebar && sidebarHasHidden && (
           <div>
             <IconButton
               onClick={() =>
-                this.setState({ showSidebar: !this.state.showSidebar })
+                this.props.setShowSidebar(!showSidebar)
               }
               classes={{ root: "hide-button hide-button-closed" }}
             >
@@ -450,7 +452,7 @@ class Sidebar extends Component {
               session={this.props.session}
               hasCalculated={this.props.hadCalculated}
               calculate={this.props.calculate}
-              sidebarHasHidden={this.state.sidebarHasHidden}
+              sidebarHasHidden={sidebarHasHidden}
             />
           </div>
         )}

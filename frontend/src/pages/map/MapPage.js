@@ -20,6 +20,8 @@ class MapPage extends Component {
       validFieldsError: false,
       missingUsersError: false,
       currentUserIndex: -1,
+      showSidebar: true,
+      sidebarHasHidden: false,
     };
   }
 
@@ -143,6 +145,14 @@ class MapPage extends Component {
     }
   };
 
+  setShowSidebar = (showSidebar) => {
+    this.setState({ showSidebar });
+  };
+
+  setSidebarHasHidden = (sidebarHasHidden) => {
+    this.setState({ sidebarHasHidden });
+  };
+
   render() {
     return (
       <div>
@@ -159,6 +169,8 @@ class MapPage extends Component {
               loading={this.state.loading}
               currentUserIndex={this.state.currentUserIndex}
               updateCurrentUserIndex={this.handleUpdateCurrentUser}
+              showSidebar={this.state.showSidebar}
+              sidebarHasHidden={this.state.sidebarHasHidden}
             />
             <Sidebar
               loading={this.state.loading}
@@ -172,6 +184,10 @@ class MapPage extends Component {
               updateSessionMeeting={this.handleUpdateSessionMeeting}
               currentUserIndex={this.state.currentUserIndex}
               updateCurrentUserIndex={this.handleUpdateCurrentUser}
+              showSidebar={this.state.showSidebar}
+              sidebarHasHidden={this.state.sidebarHasHidden}
+              setShowSidebar={this.setShowSidebar}
+              setSidebarHasHidden={this.setSidebarHasHidden}
             />
           </Fragment>
         )}

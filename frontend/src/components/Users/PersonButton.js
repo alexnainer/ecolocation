@@ -33,7 +33,12 @@ class PersonButton extends Component {
   };
 
   handleEditNameClick = (e) => {
-    e.stopPropagation();
+    console.log("editing", this.state.editing);
+    if (!this.state.editing && this.props.selected) {
+      e.stopPropagation();
+    } else {
+      this.props.onClick();
+    }
     this.setState({ editing: true, editingName: this.props.name });
     setTimeout(() => {
       this.nameRef.current.focus();
@@ -49,12 +54,17 @@ class PersonButton extends Component {
     this.props.onPersonNameChange(this.state.editingName);
   };
 
-  handleCancelEdit = () => {
+  handleCancelEdit = (e) => {
+    e.stopPropagation();
     this.setState({ editing: false });
   };
 
-  handleClick = () => {
-    if (!this.state.editing) this.props.onClick();
+  handleClick = (e) => {
+    if (this.state.editing) {
+      e.stopPropagation();
+    } else {
+      this.props.onClick();
+    }
   };
 
   handleDeleteClick = (e) => {
@@ -87,15 +97,24 @@ class PersonButton extends Component {
           />
           {editing ? (
             <Fragment>
-              <FontAwesomeIcon onClick={this.handleSaveEdit} icon={faCheck} />
-              <FontAwesomeIcon onClick={this.handleCancelEdit} icon={faTimes} />
+              <div className="actions-buttons edit-buttons">
+                <FontAwesomeIcon
+                  className="left-button"
+                  onClick={this.handleSaveEdit}
+                  icon={faCheck}
+                />
+                <FontAwesomeIcon
+                  onClick={this.handleCancelEdit}
+                  icon={faTimes}
+                />
+              </div>
             </Fragment>
           ) : (
             <Fragment>
               <p className="personTab">{this.props.name}</p>
               <div className="actions-buttons">
                 <FontAwesomeIcon
-                  style={{ marginRight: "10px" }}
+                  className="left-button"
                   onClick={this.handleEditNameClick}
                   icon={faPencilAlt}
                 />

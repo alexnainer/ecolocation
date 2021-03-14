@@ -27,6 +27,10 @@
   border-color: rgba(0, 0, 0, 1);
 }
 
+.loading-fullscreen {
+  width: 100% !important;
+}
+
 .map-source-options {
   right: 2rem;
 }
@@ -117,8 +121,8 @@ h5 {
 }
 
 .transport-text {
-  font-weight: 300!important;
-  padding-left: 5px!important; 
+  font-weight: 300 !important;
+  padding-left: 5px !important;
 }
 
 .mapboxgl-popup-content h4 {

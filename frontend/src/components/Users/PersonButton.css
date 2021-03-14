@@ -15,6 +15,10 @@
   display: none;
 }
 
+.edit-buttons {
+  display: block;
+}
+
 .personTab {
   display: flex;
   justify-content: space-between;
@@ -28,6 +32,10 @@
   color: #006115;
   -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: rgba(100, 100, 100, 0.479);
+}
+
+.left-button {
+  margin-right: 30px;
 }
 
 .selected {

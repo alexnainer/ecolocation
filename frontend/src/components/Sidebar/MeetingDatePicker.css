@@ -32,8 +32,10 @@
   height: 3px;
 }
 
-.MuiInputBase-root,
-.MuiInputBase-input {
+.MuiInputBase-root {
   cursor: pointer !important;
+}
+
+.date-picker-container .MuiInputBase-input {
   text-align: center;
 }
