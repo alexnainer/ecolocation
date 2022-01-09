@@ -1,4 +1,4 @@
-### WINNER of QHacks2021 City of Kingston Mayor’s Entrepreneur Challenge
+### WINNER of QHacks2021 & Kingston's Mayor’s Innovation Challenge
 https://devpost.com/software/eco-location
 
 ## Authors
