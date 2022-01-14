@@ -2,6 +2,8 @@
 
 Eco Location is a React webapp that finds the lowest carbon footprint meeting location for a group of people. It takes various preferences (transportation method, max distance, location type) into account to optimize for carbon impact.
 
+Check it out at [ecolocation.io](https://ecolocation.io)
+
 <br>
 <div align="center">
     <img src="https://i.imgur.com/GEwO1pK.png" alt="Eco Location Screenshot" width="85%" />
