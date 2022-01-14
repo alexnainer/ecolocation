@@ -20,7 +20,7 @@ https://devpost.com/software/eco-location
 - **[Aleks Jugovic](https://github.com/Aleksjug)**
 - **[Alex Nainer](https://github.com/alexnainer)**
 - **[Ryan Protheroe](https://github.com/Trenchh)**
-- **[Michael Taciuk](https://github.com/MichaelGW)**
+- **[Michael Taciuk](https://github.com/MichaelTaciuk)**
 
 ## Built With
 
@@ -28,4 +28,5 @@ https://devpost.com/software/eco-location
 - **[Node.js](https://nodejs.org/)**
 - **[Express](https://expressjs.com/)**
 - **[MongoDB](https://www.mongodb.com/)**
+- **[Mapbox](https://www.mapbox.com/)**
 - **[Digital Ocean](https://www.digitalocean.com/)**
