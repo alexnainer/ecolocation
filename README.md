@@ -4,7 +4,7 @@ Eco Location is a React webapp that finds the lowest carbon footprint meeting lo
 
 <br>
 <div align="center">
-    <img src="https://i.imgur.com/GEwO1pK.png" alt="Eco Location Screenshot" width="75%" />
+    <img src="https://i.imgur.com/GEwO1pK.png" alt="Eco Location Screenshot" width="85%" />
 </div>
 <br>
 
