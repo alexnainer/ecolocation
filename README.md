@@ -10,7 +10,7 @@ Check it out at [ecolocation.io](https://ecolocation.io)
 </div>
 <br>
 
-**WINNER of QHacks2021 City of Kingston Mayor’s Entrepreneur Challenge**
+**WINNER of QHacks2021 & The City of Kingston's Mayor’s Innovation Challenge**
 
 https://devpost.com/software/eco-location
 
