@@ -26,5 +26,6 @@ https://devpost.com/software/eco-location
 
 - **[React.js](https://reactjs.org/)**
 - **[Node.js](https://nodejs.org/)**
+- **[Express](https://expressjs.com/)**
 - **[MongoDB](https://www.mongodb.com/)**
 - **[Digital Ocean](https://www.digitalocean.com/)**
